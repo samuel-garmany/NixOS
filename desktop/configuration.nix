@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   imports =
@@ -11,16 +11,61 @@
     ];
 
   # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot = {
+    loader.systemd-boot.enable = lib.mkForce false;
+    loader.efi.canTouchEfiVariables = true;
+  
+    lanzaboote = {
+      enable = true;
+      pkiBundle = "/var/lib/sbctl";
+    };
+  
+    plymouth = {
+      enable = true;
+    };
+
+    # Enable "Silent boot"
+    consoleLogLevel = 3;
+    initrd.verbose = false;
+    kernelParams = [
+      "quiet"
+      "rd.udev.log_level=3"
+      "rd.systemd.show_status=auto"
+    ];
+
+    # Hide the OS choice for bootloaders.
+    # It's still possible to open the bootloader list by pressing any key
+    # It will just not appear on screen unless a key is pressed
+    loader.timeout = 0;
+  };
 
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
-
+  
+    # Allow unfree packages
+  nixpkgs.config.allowUnfree = true;
+  
   # Enable flakes and the nix command
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  
+  # Weekly garbage collect
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 14d";
+  };
+  
+  zramSwap.enable = true;
+  systemd.oomd.enable = true;
+  services.fwupd.enable = true;
+  services.fprintd.enable = true;
+  
+  # Allow insecure electron to use obsidian
+  nixpkgs.config.permittedInsecurePackages = [
+    "electron-39.8.10"
+  ];
 
-  networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "desktop"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -29,9 +74,14 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
+  
+  services.tailscale.enable = true;
+  security.apparmor.enable = true;
 
   # Set your time zone.
   time.timeZone = "America/Denver";
+  #services.automatic-timezoned.enable = true;
+  #services.geoclue2.geoProviderUrl = "https://api.beacondb.net/v1/geolocate";
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
@@ -54,6 +104,35 @@
   # Enable the GNOME Desktop Environment.
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
+  services.displayManager.autoLogin.enable = true;
+  services.displayManager.autoLogin.user = "user";
+  
+  systemd.services."getty@tty1".enable = false;
+  systemd.services."autovt@tty1".enable = false;
+  
+  services.xserver.excludePackages = [ pkgs.xterm ];
+  environment.gnome.excludePackages = with pkgs; [ 
+    epiphany
+    simple-scan
+    seahorse
+    gnome-music
+    gnome-calendar
+    gnome-contacts
+    showtime 
+    system-config-printer
+    gnome-console
+    gnome-tour
+    yelp
+    decibels
+  ];
+
+  # Disable the NixOS manual
+  documentation.nixos.enable = false;
+  
+  environment.extraSetup = ''
+    rm -f $out/share/applications/cups.desktop
+  '';
+
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -94,17 +173,152 @@
   };
 
   # Install firefox.
-  programs.firefox.enable = true;
+  # Settings are pulled from privacyguides
+  programs.firefox = {
+    enable = true;
+    policies = {
+      # Telemetry & Studies
+      DisableTelemetry = true;
+      DisableFirefoxStudies = true;
 
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
+      SearchEngines = {
+        Default = "Brave";
+        Add = [
+          {
+            Name = "Brave";
+            URLTemplate = "https://search.brave.com/search?q={searchTerms}";
+            Method = "GET";
+          }
+        ];
+      };
+
+      Preferences = {
+        # Vertical Tabs
+        "sidebar.verticalTabs" = true;
+        
+        # Restore session
+        "browser.startup.page" = 3;
+      
+        # Search Suggestions (Uncheck Show search suggestions & Firefox Suggest)
+        "browser.urlbar.suggest.searches" = false;
+        "browser.urlbar.suggest.quicksuggest.nonlinear" = false;
+        "browser.urlbar.suggest.quicksuggest.sponsored" = false;
+        
+        # Sponsored Content (Disable on New Tab)
+        "browser.newtabpage.activity-stream.showSponsored" = false;
+        "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
+
+        # Enhanced Tracking Protection (Select Strict)
+        "browser.contentblocking.category" = "strict";
+
+        # Sanitize on Close (Delete cookies and site data when Firefox is closed)
+        #"network.cookie.lifetimePolicy" = 2;
+        #"privacy.sanitize.sanitizeOnShutdown" = true;
+        #"privacy.clearOnShutdown.cookies" = true;
+        "network.cookie.lifetimePolicy" = 0;
+        "privacy.sanitize.sanitizeOnShutdown" = false;
+
+        # Telemetry (Uncheck Send technical and interaction data, crash reports, etc.)
+        "datareporting.healthreport.uploadEnabled" = false;
+        "datareporting.policy.dataSubmissionEnabled" = false;
+        "browser.discovery.enabled" = false; 
+        "app.shield.optoutstudies.enabled" = false;
+        "browser.ping-centre.telemetry" = false;
+        "toolkit.telemetry.unified" = false;
+        "toolkit.telemetry.enabled" = false;
+        "toolkit.telemetry.archive.enabled" = false;
+
+        # Website Advertising Preferences (Uncheck Allow websites to perform privacy-preserving ad measurement)
+        "dom.private-attribution.submission.enabled" = false;
+
+        # HTTPS-Only Mode (Enable HTTPS-Only Mode in all windows)
+        "dom.security.https_only_mode" = true;
+
+        # DNS over HTTPS (Max Protection)
+        "network.trr.mode" = 3;
+        # You can specify a custom provider here, e.g., Quad9
+        "network.trr.uri" = "https://dns.quad9.net/dns-query"; 
+      };
+      
+      Extensions = {
+        Install = [
+          "https://addons.mozilla.org/firefox/downloads/latest/bitwarden-password-manager/latest.xpi"
+          "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi"
+          "https://www.zotero.org/download/connector/dl?browser=firefox&version=5.0.210"
+          "https://addons.mozilla.org/firefox/downloads/latest/multi-account-containers/latest.xpi"
+        ];
+      };
+    };
+  };
+  
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true;
+    dedicatedServer.openFirewall = true;
+  };
+  
+  programs.zoxide.enable = true;
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    neovim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    # Core utilities
+    (neovim.overrideAttrs (old: {
+      postBuild = (old.postBuild or "") + ''
+        rm -rf $out/share/applications
+      '';
+    }))
     git
-  #  wget
+    ptyxis
+    sbctl # Required for setting up Lanzaboote keys
+
+    # Development & Productivity
+    arduino-ide
+    nextcloud-client
+    obsidian
+    zotero
+    libreoffice
+    thunderbird
+
+    # Media, Modeling, & Utilities
+    obs-studio
+    orca-slicer
+    freecad
+    qgis
+    gimp
+    audacity
+    freetube
+    cine
+    slack
+    discord
+    
+    # GNOME Ecosystem & Applications
+    blanket
+    foliate
+    vaults
+    bottles
+    prismlauncher
+    bitwarden-desktop
+    yubioath-flutter
+    zoom-us
+    
+    gnome-calculator
+    gnome-characters
+    gnome-connections
+    gnome-firmware
+    loupe
+    gnome-maps
+    gnome-network-displays
+    papers
+    snapshot
+    solanum
+    gnome-text-editor
+    gnome-weather
+    pika-backup
+    baobab
+    gnome-clocks
+    gnome-font-viewer
+    inkscape
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
