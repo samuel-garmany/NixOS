@@ -180,13 +180,13 @@
       # Telemetry & Studies
       DisableTelemetry = true;
       DisableFirefoxStudies = true;
-      
+    
       PasswordManagerEnabled = false;
 
       SearchEngines = {
-        Default = "Brave";
+          Default = "Brave";
         Add = [
-          {
+            {
             Name = "Brave";
             URLTemplate = "https://search.brave.com/search?q={searchTerms}";
             Method = "GET";
@@ -194,61 +194,104 @@
         ];
       };
 
-      Preferences = {
-        # Vertical Tabs
-        "sidebar.verticalTabs" = true;
-        
-        # Restore session
-        "browser.startup.page" = 3;
+    Preferences = {
+      # Vertical Tabs
+      "sidebar.verticalTabs" = true;
       
-        # Search Suggestions (Uncheck Show search suggestions & Firefox Suggest)
-        "browser.urlbar.suggest.searches" = false;
-        "browser.urlbar.suggest.quicksuggest.nonlinear" = false;
-        "browser.urlbar.suggest.quicksuggest.sponsored" = false;
-        
-        # Sponsored Content (Disable on New Tab)
-        "browser.newtabpage.activity-stream.showSponsored" = false;
-        "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
+      # Restore session
+      "browser.startup.page" = 3;
+   
+       # Search Suggestions
+      "browser.urlbar.suggest.searches" = false;
+      "browser.urlbar.suggest.quicksuggest.nonlinear" = false;
+      "browser.urlbar.suggest.quicksuggest.sponsored" = false;
+      
+      # Sponsored Content
+      "browser.newtabpage.activity-stream.showSponsored" = false;
+      "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
 
-        # Enhanced Tracking Protection (Select Strict)
-        "browser.contentblocking.category" = "strict";
+      # Enhanced Tracking Protection
+      "browser.contentblocking.category" = "strict";
 
-        # Sanitize on Close (Delete cookies and site data when Firefox is closed)
-        #"network.cookie.lifetimePolicy" = 2;
-        #"privacy.sanitize.sanitizeOnShutdown" = true;
-        #"privacy.clearOnShutdown.cookies" = true;
-        "network.cookie.lifetimePolicy" = 0;
-        "privacy.sanitize.sanitizeOnShutdown" = false;
+      # Cookies & Sessions
+      "network.cookie.lifetimePolicy" = 0;
+      "privacy.sanitize.sanitizeOnShutdown" = false;
 
-        # Telemetry (Uncheck Send technical and interaction data, crash reports, etc.)
+      # Telemetry
+      "datareporting.healthreport.uploadEnabled" = false;
+      "datareporting.policy.dataSubmissionEnabled" = false;
+      "browser.discovery.enabled" = false; 
+      "app.shield.optoutstudies.enabled" = false;
+      "browser.ping-centre.telemetry" = false;
+      "toolkit.telemetry.unified" = false;
+      "toolkit.telemetry.enabled" = false;
+      "toolkit.telemetry.archive.enabled" = false;
+
+      # Website Advertising Preferences
+      "dom.private-attribution.submission.enabled" = false;
+
+      # HTTPS-Only Mode
+      "dom.security.https_only_mode" = true;
+
+      # DNS over HTTPS
+      "network.trr.mode" = 3;
+      "network.trr.uri" = "https://dns.quad9.net/dns-query"; 
+    };
+
+    ExtensionSettings = let
+      moz = short: "https://addons.mozilla.org/firefox/downloads/latest/${short}/latest.xpi";
+    in {
+      "*".installation_mode = "blocked";
+
+      "uBlock0@raymondhill.net" = {
+        install_url       = moz "ublock-origin";
+        installation_mode = "force_installed";
+        updates_disabled  = true;
+      };
+
+      "{d63a583e-523c-4443-8557-0466453a2901}" = {
+        install_url       = moz "bitwarden-password-manager";
+        installation_mode = "force_installed";
+        updates_disabled  = true;
+      };
+
+      "@testpilot-containers" = {
+        install_url       = moz "multi-account-containers";
+        installation_mode = "force_installed";
+        updates_disabled  = true;
+      };
+
+      "zotero-connector@zotero.org" = {
+        install_url       = "https://www.zotero.org/download/connector/dl?browser=firefox&version=5.0.210";
+        installation_mode = "force_installed";
+        updates_disabled  = true;
+      };
+    };
+  };
+};
+  
+  # Config also taken from privacy guides
+  programs.thunderbird = {
+    enable = true;
+    policies = {
+      DisableTelemetry = true;
+    
+      Preferences = {
+        # Allow Thunderbird to send technical/interaction data (Telemetry)
         "datareporting.healthreport.uploadEnabled" = false;
-        "datareporting.policy.dataSubmissionEnabled" = false;
-        "browser.discovery.enabled" = false; 
-        "app.shield.optoutstudies.enabled" = false;
-        "browser.ping-centre.telemetry" = false;
-        "toolkit.telemetry.unified" = false;
         "toolkit.telemetry.enabled" = false;
         "toolkit.telemetry.archive.enabled" = false;
+        "browser.ping-centre.telemetry" = false;
 
-        # Website Advertising Preferences (Uncheck Allow websites to perform privacy-preserving ad measurement)
-        "dom.private-attribution.submission.enabled" = false;
+        # Remember websites and links I've visited
+        # Setting this to false disables history tracking
+        "places.history.enabled" = false;
 
-        # HTTPS-Only Mode (Enable HTTPS-Only Mode in all windows)
-        "dom.security.https_only_mode" = true;
-
-        # DNS over HTTPS (Max Protection)
-        "network.trr.mode" = 3;
-        # You can specify a custom provider here, e.g., Quad9
-        "network.trr.uri" = "https://dns.quad9.net/dns-query"; 
-      };
-      
-      Extensions = {
-        Install = [
-          "https://addons.mozilla.org/firefox/downloads/latest/bitwarden-password-manager/latest.xpi"
-          "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi"
-          "https://www.zotero.org/download/connector/dl?browser=firefox&version=5.0.210"
-          "https://addons.mozilla.org/firefox/downloads/latest/multi-account-containers/latest.xpi"
-        ];
+        # Accept cookies from sites
+        # 0 = Accept All Cookies
+        # 2 = Reject all cookies (Privacy guides recommended)
+        # 4 = Reject Cross-Site Tracking Cookies
+        "network.cookie.cookieBehavior" = 4;
       };
     };
   };
@@ -282,7 +325,6 @@
     poppler-utils
     libreoffice
     jre8
-    thunderbird
 
     # Media, Modeling, & Utilities
     obs-studio
