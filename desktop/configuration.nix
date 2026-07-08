@@ -180,6 +180,8 @@
       # Telemetry & Studies
       DisableTelemetry = true;
       DisableFirefoxStudies = true;
+      
+      PasswordManagerEnabled = false;
 
       SearchEngines = {
         Default = "Brave";
