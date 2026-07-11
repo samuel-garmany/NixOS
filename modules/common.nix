@@ -2,19 +2,24 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   # Bootloader.
   boot = {
     loader.systemd-boot.enable = lib.mkForce false;
     loader.efi.canTouchEfiVariables = true;
-  
+
     lanzaboote = {
       enable = true;
       pkiBundle = "/var/lib/sbctl";
     };
-  
+
     plymouth = {
       enable = true;
     };
@@ -36,25 +41,28 @@
 
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
-  
-    # Allow unfree packages
+
+  # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-  
+
   # Enable flakes and the nix command
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
+
   # Weekly garbage collect
   nix.gc = {
     automatic = true;
     dates = "weekly";
     options = "--delete-older-than 14d";
   };
-  
+
   zramSwap.enable = true;
   systemd.oomd.enable = true;
   services.fwupd.enable = true;
   services.fprintd.enable = true;
-  
+
   # Allow insecure electron to use obsidian
   nixpkgs.config.permittedInsecurePackages = [
     "electron-39.8.10"
@@ -66,11 +74,9 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
-  
+
   services.tailscale.enable = true;
   security.apparmor.enable = true;
-
-
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
@@ -95,19 +101,19 @@
   services.desktopManager.gnome.enable = true;
   services.displayManager.autoLogin.enable = true;
   services.displayManager.autoLogin.user = "user";
-  
+
   systemd.services."getty@tty1".enable = false;
   systemd.services."autovt@tty1".enable = false;
-  
+
   services.xserver.excludePackages = [ pkgs.xterm ];
-  environment.gnome.excludePackages = with pkgs; [ 
+  environment.gnome.excludePackages = with pkgs; [
     epiphany
     simple-scan
     seahorse
     gnome-music
     gnome-calendar
     gnome-contacts
-    showtime 
+    showtime
     system-config-printer
     gnome-console
     gnome-tour
@@ -117,11 +123,11 @@
 
   # Disable the NixOS manual
   documentation.nixos.enable = false;
-  
+
   environment.extraSetup = ''
     rm -f $out/share/applications/cups.desktop
+    rm -f $out/share/applications/nvim.desktop
   '';
-
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -155,9 +161,12 @@
   users.users."user" = {
     isNormalUser = true;
     description = "Samuel Garmany";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
     packages = with pkgs; [
-    #  thunderbird
+      #  thunderbird
     ];
   };
 
@@ -169,13 +178,13 @@
       # Telemetry & Studies
       DisableTelemetry = true;
       DisableFirefoxStudies = true;
-    
+
       PasswordManagerEnabled = false;
 
       SearchEngines = {
-          Default = "Brave";
+        Default = "Brave";
         Add = [
-            {
+          {
             Name = "Brave";
             URLTemplate = "https://search.brave.com/search?q={searchTerms}";
             Method = "GET";
@@ -195,82 +204,84 @@
       #  Locked = true; # Prevents changing this setting in the Firefox UI
       #};
 
-    Preferences = {
-      # Vertical Tabs
-      "sidebar.verticalTabs" = true;
-      
-      # Restore session
-      "browser.startup.page" = 3;
-   
-       # Search Suggestions
-      "browser.urlbar.suggest.searches" = false;
-      "browser.urlbar.suggest.quicksuggest.nonlinear" = false;
-      "browser.urlbar.suggest.quicksuggest.sponsored" = false;
-      
-      # Sponsored Content
-      "browser.newtabpage.activity-stream.showSponsored" = false;
-      "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
+      Preferences = {
+        # Vertical Tabs
+        "sidebar.verticalTabs" = true;
 
-      # Enhanced Tracking Protection
-      "browser.contentblocking.category" = "strict";
+        # Restore session
+        "browser.startup.page" = 3;
 
-      # Cookies & Sessions
-      "network.cookie.lifetimePolicy" = 0;
+        # Search Suggestions
+        "browser.urlbar.suggest.searches" = false;
+        "browser.urlbar.suggest.quicksuggest.nonlinear" = false;
+        "browser.urlbar.suggest.quicksuggest.sponsored" = false;
 
-      # Telemetry
-      "datareporting.policy.dataSubmissionEnabled" = false;
-      "browser.discovery.enabled" = false; 
-      "browser.ping-centre.telemetry" = false;
+        # Sponsored Content
+        "browser.newtabpage.activity-stream.showSponsored" = false;
+        "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
 
-      # Website Advertising Preferences
-      "dom.private-attribution.submission.enabled" = false;
+        # Enhanced Tracking Protection
+        "browser.contentblocking.category" = "strict";
 
-      # HTTPS-Only Mode
-      "dom.security.https_only_mode" = true;
+        # Cookies & Sessions
+        "network.cookie.lifetimePolicy" = 0;
 
-      # DNS over HTTPS
-      "network.trr.mode" = 3;
-      "network.trr.uri" = "https://dns.quad9.net/dns-query"; 
-    };
+        # Telemetry
+        "datareporting.policy.dataSubmissionEnabled" = false;
+        "browser.discovery.enabled" = false;
+        "browser.ping-centre.telemetry" = false;
 
-    ExtensionSettings = let
-      moz = short: "https://addons.mozilla.org/firefox/downloads/latest/${short}/latest.xpi";
-    in {
-      "*".installation_mode = "blocked";
+        # Website Advertising Preferences
+        "dom.private-attribution.submission.enabled" = false;
 
-      "uBlock0@raymondhill.net" = {
-        install_url       = moz "ublock-origin";
-        installation_mode = "force_installed";
-        updates_disabled  = true;
+        # HTTPS-Only Mode
+        "dom.security.https_only_mode" = true;
+
+        # DNS over HTTPS
+        "network.trr.mode" = 3;
+        "network.trr.uri" = "https://dns.quad9.net/dns-query";
       };
 
-      "{446900e4-71c2-419f-a6a7-df9c091e268b}" = {
-        install_url       = moz "bitwarden-password-manager";
-        installation_mode = "force_installed";
-        updates_disabled  = true;
-      };
+      ExtensionSettings =
+        let
+          moz = short: "https://addons.mozilla.org/firefox/downloads/latest/${short}/latest.xpi";
+        in
+        {
+          "*".installation_mode = "blocked";
 
-      "@testpilot-containers" = {
-        install_url       = moz "multi-account-containers";
-        installation_mode = "force_installed";
-        updates_disabled  = true;
-      };
+          "uBlock0@raymondhill.net" = {
+            install_url = moz "ublock-origin";
+            installation_mode = "force_installed";
+            updates_disabled = true;
+          };
 
-      "zotero@chnm.gmu.edu" = {
-        install_url       = "https://www.zotero.org/download/connector/dl?browser=firefox";
-        installation_mode = "force_installed";
-        updates_disabled  = true;
-      };
+          "{446900e4-71c2-419f-a6a7-df9c091e268b}" = {
+            install_url = moz "bitwarden-password-manager";
+            installation_mode = "force_installed";
+            updates_disabled = true;
+          };
+
+          "@testpilot-containers" = {
+            install_url = moz "multi-account-containers";
+            installation_mode = "force_installed";
+            updates_disabled = true;
+          };
+
+          "zotero@chnm.gmu.edu" = {
+            install_url = "https://www.zotero.org/download/connector/dl?browser=firefox";
+            installation_mode = "force_installed";
+            updates_disabled = true;
+          };
+        };
     };
   };
-};
-  
+
   # Config also taken from privacy guides
   programs.thunderbird = {
     enable = true;
     policies = {
       DisableTelemetry = true;
-    
+
       Preferences = {
         # Allow Thunderbird to send technical/interaction data (Telemetry)
         "datareporting.healthreport.uploadEnabled" = false;
@@ -290,24 +301,8 @@
       };
     };
   };
-  
 
-  
   programs.zoxide.enable = true;
- 
-  # Used for LazyVim
-  # TODO: Remove this when switching to nvf
-  programs.nix-ld = {
-    enable = true;
-    libraries = with pkgs; [
-      ## Put here any library that is required when running a package
-      ## ...
-      ## Uncomment if you want to use the libraries provided by default in the steam distribution
-      ## but this is quite far from being exhaustive
-      ## https://github.com/NixOS/nixpkgs/issues/354513
-      # (pkgs.runCommand "steamrun-lib" {} "mkdir $out; ln -s ${pkgs.steam-run.fhsenv}/usr/lib64 $out/lib")
-    ];
-  };
 
   fonts.packages = with pkgs; [
     maple-mono.NF
@@ -317,33 +312,17 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     # Core
-    fd
-    fzf
-    gcc
-    git
-    gnumake
-    lazygit
-    (neovim.overrideAttrs (old: {
-      postBuild = (old.postBuild or "") + ''
-        rm -rf $out/share/applications
-      '';
-    }))
     ptyxis
-    ripgrep
     unzip
     sbctl
 
-    # Development & Productivity
-    arduino-ide
+    # Productivity
     jre8
     libreoffice
-    lua-language-server
     nextcloud-client
-    nixd
     obsidian
     poppler-utils
     texlive.combined.scheme-full
-    tree-sitter
     zotero
 
     # Media & Modeling

@@ -1,12 +1,16 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
-  imports =
-    [ 
-      ../../modules/common.nix
-      ../../modules/gaming.nix
-      ./hardware-configuration.nix
-    ];
+  imports = [
+    ../../modules/common.nix
+    ../../modules/gaming.nix
+    ./hardware-configuration.nix
+  ];
 
   networking.hostName = "desktop"; # Define your hostname.
 

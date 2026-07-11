@@ -1,11 +1,15 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
-  imports =
-    [ 
-      ../../modules/common.nix
-      ./hardware-configuration.nix
-    ];
+  imports = [
+    ../../modules/common.nix
+    ./hardware-configuration.nix
+  ];
 
   networking.hostName = "laptop"; # Define your hostname.
 
