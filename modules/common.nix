@@ -301,8 +301,11 @@
       };
     };
   };
-
   programs.zoxide.enable = true;
+
+  # For Yubikey
+  services.udev.packages = [ pkgs.yubikey-personalization ];
+  services.pcscd.enable = true;
 
   fonts.packages = with pkgs; [
     maple-mono.NF
