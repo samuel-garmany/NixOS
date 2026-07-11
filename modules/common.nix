@@ -322,6 +322,9 @@
     # Productivity
     jre8
     libreoffice
+    hunspell
+    hunspellDicts.en_US
+    hyphenDicts.en_US
     nextcloud-client
     obsidian
     poppler-utils
