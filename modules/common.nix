@@ -294,13 +294,7 @@
     };
   };
   
-  programs.steam = {
-    enable = true;
-    remotePlay.openFirewall = true;
-    dedicatedServer.openFirewall = true;
-  };
- 
-  programs.gamemode.enable = true;
+
   
   programs.zoxide.enable = true;
  
@@ -358,7 +352,6 @@
     # Media & Modeling
     audacity
     cine
-    discord
     freecad
     freetube
     gimp
@@ -371,7 +364,6 @@
     baobab
     bitwarden-desktop
     blanket
-    bottles
     foliate
     gnome-calculator
     gnome-characters
@@ -387,7 +379,6 @@
     loupe
     papers
     pika-backup
-    prismlauncher
     snapshot
     vaults
     yubioath-flutter

@@ -4,6 +4,7 @@
   imports =
     [ 
       ../../modules/common.nix
+      ../../modules/gaming.nix
       ./hardware-configuration.nix
     ];
 
