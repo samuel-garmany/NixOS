@@ -193,6 +193,8 @@
     };
   };
 
+  programs.zoxide.enable = true;
+
   environment.systemPackages = with pkgs; [
     fd
     fzf

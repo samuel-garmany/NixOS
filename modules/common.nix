@@ -301,7 +301,6 @@
       };
     };
   };
-  programs.zoxide.enable = true;
 
   # For Yubikey
   services.udev.packages = [ pkgs.yubikey-personalization ];
@@ -326,7 +325,7 @@
     hunspellDicts.en_US
     hyphenDicts.en_US
     nextcloud-client
-    obsidian
+    #obsidian
     poppler-utils
     texlive.combined.scheme-full
     zotero
