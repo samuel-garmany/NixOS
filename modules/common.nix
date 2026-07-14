@@ -74,7 +74,7 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
-
+  
   services.tailscale.enable = true;
   security.apparmor.enable = true;
 
@@ -238,8 +238,8 @@
         "dom.security.https_only_mode" = true;
 
         # DNS over HTTPS
-        "network.trr.mode" = 3;
-        "network.trr.uri" = "https://dns.quad9.net/dns-query";
+        #"network.trr.mode" = 3;
+        #"network.trr.uri" = "https://dns.quad9.net/dns-query";
       };
 
       ExtensionSettings =
@@ -326,6 +326,7 @@
     hyphenDicts.en_US
     nextcloud-client
     #obsidian
+    joplin-desktop
     poppler-utils
     texlive.combined.scheme-full
     zotero
