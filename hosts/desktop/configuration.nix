@@ -14,8 +14,6 @@
 
   networking.hostName = "desktop"; # Define your hostname.
 
-  # Set your time zone.
-  time.timeZone = "America/Denver";
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Hide extraneous disks

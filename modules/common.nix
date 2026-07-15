@@ -74,9 +74,23 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
+  # Specify the Wi-Fi backend used for the device.
+  # Currently supported are wpa_supplicant or iwd (experimental).
+  networking.networkmanager.wifi.backend = "iwd";
+
+  # Allow iwd to read user-specific configuration/certificate files (e.g. in ~/.joinnow)
+  # while protecting user data from modification by the service.
+  # From systemd.exec(5): "Setting this to 'read-only' is useful to protect user data
+  # from modification by the service, while still allowing the service to read user-specific
+  # configuration files."
+  systemd.services.iwd.serviceConfig.ProtectHome = "read-only";
   
   services.tailscale.enable = true;
   security.apparmor.enable = true;
+
+  # Enable automatic timezone and location services for weather (IP-based fallback)
+  services.automatic-timezoned.enable = true;
+  services.geoclue2.enable = true;
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";

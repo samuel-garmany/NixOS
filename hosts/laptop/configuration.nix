@@ -13,9 +13,6 @@
 
   networking.hostName = "laptop"; # Define your hostname.
 
-  # Enable automatic timezone and location services for weather (IP-based fallback)
-  services.automatic-timezoned.enable = true;
-  services.geoclue2.enable = true;
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # This value determines the NixOS release from which the default
