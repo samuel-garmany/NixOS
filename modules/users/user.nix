@@ -11,6 +11,9 @@
           "networkmanager"
           "wheel"
         ];
+        # Set fish as the default shell for a specific user
+        # Note: Using Fish as your login shell can occasionally cause issues because Fish is not POSIX-compliant.
+        shell = pkgs.fish;
         packages = with pkgs; [
           #  thunderbird
         ];

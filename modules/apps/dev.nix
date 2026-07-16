@@ -200,13 +200,10 @@
       };
 
       environment.systemPackages = with pkgs; [
-        fd
-        fzf
         gcc
         git
         gnumake
         lazygit
-        ripgrep
         arduino-ide
         lua-language-server
         neovim-remote
