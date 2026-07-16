@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    
+
     # Lanzaboote handles Secure Boot for NixOS
     lanzaboote = {
       url = "github:nix-community/lanzaboote";
@@ -12,43 +12,59 @@
     };
 
     nvf.url = "github:notashelf/nvf";
+
+    home-manager = {
+      url = "github:nix-community/home-manager/release-26.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
   };
 
-  outputs = inputs@{ flake-parts, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } ({ config, ... }: {
-      systems = [ "x86_64-linux" ];
+  outputs =
+    inputs@{ flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } (
+      { config, ... }: {
+        systems = [ "x86_64-linux" ];
 
-      imports = 
-        let
-          # "Since all non-entry-point files are top-level modules ... they can all be automatically imported using a trivial expression"
-          allFiles = inputs.nixpkgs.lib.filesystem.listFilesRecursive ./modules;
-          allModules = builtins.filter (file: inputs.nixpkgs.lib.hasSuffix ".nix" (builtins.toString file)) allFiles;
-        in
-        allModules ++ [
-          ./hosts/desktop/configuration.nix
-          ./hosts/laptop/configuration.nix
-        ];
+        imports =
+          let
+            # Since all non-entry-point files are top-level modules and their paths convey meaning only to the author, they can all be automatically imported using a trivial expression
+            allFiles = inputs.nixpkgs.lib.filesystem.listFilesRecursive ./modules;
+            allModules = builtins.filter (
+              file: inputs.nixpkgs.lib.hasSuffix ".nix" (builtins.toString file)
+            ) allFiles;
+          in
+          allModules
+          ++ [
+            ./hosts/desktop/configuration.nix
+            ./hosts/laptop/configuration.nix
+          ];
 
-      flake = {
-        nixosConfigurations = {
-          desktop = inputs.nixpkgs.lib.nixosSystem {
-            system = "x86_64-linux";
-            modules = [
-              config.nixos.desktop
-              inputs.lanzaboote.nixosModules.lanzaboote
-              inputs.nvf.nixosModules.default
-            ];
-          };
+        flake = {
+          nixosConfigurations = {
+            desktop = inputs.nixpkgs.lib.nixosSystem {
+              system = "x86_64-linux";
+              modules = [
+                config.nixos.desktop
+                inputs.lanzaboote.nixosModules.lanzaboote
+                inputs.nvf.nixosModules.default
+                inputs.home-manager.nixosModules.home-manager
+              ];
+            };
 
-          laptop = inputs.nixpkgs.lib.nixosSystem {
-            system = "x86_64-linux";
-            modules = [
-              config.nixos.laptop
-              inputs.lanzaboote.nixosModules.lanzaboote
-              inputs.nvf.nixosModules.default
-            ];
+            laptop = inputs.nixpkgs.lib.nixosSystem {
+              system = "x86_64-linux";
+              modules = [
+                config.nixos.laptop
+                inputs.lanzaboote.nixosModules.lanzaboote
+                inputs.nvf.nixosModules.default
+                inputs.home-manager.nixosModules.home-manager
+                inputs.nixos-hardware.nixosModules.framework-13-7040-amd
+              ];
+            };
           };
         };
-      };
-    });
+      }
+    );
 }
