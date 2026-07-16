@@ -1,9 +1,10 @@
 {
-  description = "A very basic flake";
+  description = "A Dendritic Flake";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
-
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    
     # Lanzaboote handles Secure Boot for NixOS
     lanzaboote = {
       url = "github:nix-community/lanzaboote";
@@ -13,35 +14,41 @@
     nvf.url = "github:notashelf/nvf";
   };
 
-  outputs =
-    {
-      self,
-      nixpkgs,
-      lanzaboote,
-      nvf,
-      ...
-    }:
-    {
-      nixosConfigurations = {
-        desktop = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          modules = [
-            lanzaboote.nixosModules.lanzaboote
-            nvf.nixosModules.default
-            ./hosts/desktop/configuration.nix
-            ./modules/dev.nix
-          ];
-        };
+  outputs = inputs@{ flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } ({ config, ... }: {
+      systems = [ "x86_64-linux" ];
 
-        laptop = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          modules = [
-            lanzaboote.nixosModules.lanzaboote
-            nvf.nixosModules.default
-            ./hosts/laptop/configuration.nix
-            ./modules/dev.nix
-          ];
+      imports = 
+        let
+          # "Since all non-entry-point files are top-level modules ... they can all be automatically imported using a trivial expression"
+          allFiles = inputs.nixpkgs.lib.filesystem.listFilesRecursive ./modules;
+          allModules = builtins.filter (file: inputs.nixpkgs.lib.hasSuffix ".nix" (builtins.toString file)) allFiles;
+        in
+        allModules ++ [
+          ./hosts/desktop/configuration.nix
+          ./hosts/laptop/configuration.nix
+        ];
+
+      flake = {
+        nixosConfigurations = {
+          desktop = inputs.nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            modules = [
+              config.nixos.desktop
+              inputs.lanzaboote.nixosModules.lanzaboote
+              inputs.nvf.nixosModules.default
+            ];
+          };
+
+          laptop = inputs.nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            modules = [
+              config.nixos.laptop
+              inputs.lanzaboote.nixosModules.lanzaboote
+              inputs.nvf.nixosModules.default
+            ];
+          };
         };
       };
-    };
+    });
 }
