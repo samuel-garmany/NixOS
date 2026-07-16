@@ -10,11 +10,14 @@
       # Allow unfree packages
       nixpkgs.config.allowUnfree = true;
 
-      # Enable flakes and the nix command
-      nix.settings.experimental-features = [
-        "nix-command"
-        "flakes"
-      ];
+      # Enable flakes, nix command, and optimize storage
+      nix.settings = {
+        experimental-features = [
+          "nix-command"
+          "flakes"
+        ];
+        auto-optimise-store = true;
+      };
 
       # Weekly garbage collect
       nix.gc = {
