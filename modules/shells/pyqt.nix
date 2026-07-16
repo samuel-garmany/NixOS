@@ -11,7 +11,7 @@
       );
     in
     {
-      devShells.fnt = pkgs.mkShell {
+      devShells.pyqt = pkgs.mkShell {
         packages = with pkgs; [
           pythonEnv
           ffmpeg

@@ -1,6 +1,6 @@
 {
   perSystem = { pkgs, ... }: {
-    devShells.fed-pilot = pkgs.mkShell {
+    devShells.r = pkgs.mkShell {
       packages = with pkgs; [
         # Core R and Pre-compiled CRAN Packages
         R
