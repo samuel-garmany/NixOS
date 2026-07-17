@@ -36,7 +36,7 @@ code to produce outputs"]:::flake
   end
   Inputs --> Flake
 
-  subgraph Local [2. Local Repository (Source Code)]
+  subgraph Local [2. Local Repository]
     direction TB
     h_Hosts["hosts/
 - desktop

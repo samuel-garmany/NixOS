@@ -86,7 +86,7 @@ def main():
     # 2. Local Repository
     if hosts or modules:
         lines.append("")
-        lines.append("  subgraph Local [2. Local Repository (Source Code)]")
+        lines.append("  subgraph Local [2. Local Repository]")
         lines.append("    direction TB")
         
         # Hosts grouped into one node to save space, or individual nodes
