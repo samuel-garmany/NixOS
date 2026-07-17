@@ -14,10 +14,33 @@
               tabstop = 2;
               expandtab = true;
               autoindent = true;
+              updatetime = 200;
+
+              # Smart word wrap
+              wrap = true;
+              linebreak = true;
+              breakindent = true;
+
+              # Autosave
+              autowrite = true;
+              autowriteall = true;
+
+              # LazyVim-like quality of life features
+              cursorline = true;
+              scrolloff = 8;
+              sidescrolloff = 8;
+              ignorecase = true;
+              smartcase = true;
+              signcolumn = "yes";
             };
 
             viAlias = false;
             vimAlias = true;
+
+            spellcheck = {
+              enable = true;
+              programmingWordlist.enable = true;
+            };
 
             clipboard = {
               enable = true;
@@ -30,6 +53,7 @@
               # the LSP API.
               enable = true;
               presets.tailwindcss-language-server.enable = true;
+              trouble.enable = true;
             };
 
             # This section does not include a comprehensive list of available language modules.
@@ -123,6 +147,7 @@
             utility = {
               surround.enable = true;
               smart-splits.enable = true;
+              motion.flash-nvim.enable = true;
             };
 
             notes = {
@@ -167,6 +192,19 @@
               }
             ];
 
+            autocmds = [
+              {
+                event = [
+                  "FocusLost"
+                  "BufLeave"
+                  "InsertLeave"
+                  "CursorHold"
+                ];
+                pattern = [ "*" ];
+                command = "silent! wa";
+              }
+            ];
+
             extraPlugins = with pkgs.vimPlugins; {
               "vimtex" = {
                 package = vimtex;
@@ -198,7 +236,7 @@
       };
 
       environment.systemPackages = with pkgs; [
-	gcc
+        gcc
         gnumake
         lazygit
         lua-language-server
