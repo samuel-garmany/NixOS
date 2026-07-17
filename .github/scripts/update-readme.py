@@ -8,6 +8,33 @@ import os
 def safe_id(s):
     return re.sub(r'[^a-zA-Z0-9]', '_', s)
 
+def get_packages_for_output(flake_attr):
+    if flake_attr.startswith("nixosConfigurations."):
+        host = flake_attr.split(".")[1]
+        cmd = ["nix", "eval", f".#nixosConfigurations.{host}.config.environment.systemPackages", "--apply", "map (p: p.name)", "--json"]
+    elif flake_attr.startswith("devShells."):
+        cmd = ["nix", "eval", f".#{flake_attr}.nativeBuildInputs", "--apply", "map (p: p.name)", "--json"]
+    else:
+        return []
+
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode == 0:
+            pkgs = json.loads(result.stdout)
+            # Remove version strings for cleaner display (e.g. "slack-4.49.89" -> "slack")
+            clean_pkgs = []
+            for p in pkgs:
+                # Basic heuristic to drop version suffix
+                m = re.match(r'^([a-zA-Z0-9_-]+?)-[0-9]', p)
+                if m:
+                    clean_pkgs.append(m.group(1))
+                else:
+                    clean_pkgs.append(p)
+            return clean_pkgs
+    except:
+        pass
+    return []
+
 def main():
     # 1. Get flake outputs
     outputs = {}
@@ -122,9 +149,29 @@ def main():
                 for k, v in out_val.items():
                     if isinstance(v, dict) and 'type' not in v:
                         for k2 in v.keys():
-                            lines.append(f"    out_{safe_id(out_type)}_{safe_id(k)}_{safe_id(k2)}[{out_type}.{k}.{k2}]:::output")
+                            flake_attr = f"{out_type}.{k}.{k2}"
+                            pkgs = get_packages_for_output(flake_attr)
+                            
+                            label_html = f"<b>{flake_attr}</b>"
+                            if pkgs:
+                                display_pkgs = pkgs[:5]
+                                label_html += f"<hr/><i>Packages:</i><br/>" + "<br/>".join([f"- {p}" for p in display_pkgs])
+                                if len(pkgs) > 5:
+                                    label_html += f"<br/><i>... (+{len(pkgs)-5} more)</i>"
+                                    
+                            lines.append(f"    out_{safe_id(out_type)}_{safe_id(k)}_{safe_id(k2)}[\"{label_html}\"]:::output")
                     else:
-                        lines.append(f"    out_{safe_id(out_type)}_{safe_id(k)}[{out_type}.{k}]:::output")
+                        flake_attr = f"{out_type}.{k}"
+                        pkgs = get_packages_for_output(flake_attr)
+                        
+                        label_html = f"<b>{flake_attr}</b>"
+                        if pkgs:
+                            display_pkgs = pkgs[:5]
+                            label_html += f"<hr/><i>Packages:</i><br/>" + "<br/>".join([f"- {p}" for p in display_pkgs])
+                            if len(pkgs) > 5:
+                                label_html += f"<br/><i>... (+{len(pkgs)-5} more)</i>"
+                                
+                        lines.append(f"    out_{safe_id(out_type)}_{safe_id(k)}[\"{label_html}\"]:::output")
         lines.append("  end")
         lines.append("  Flake --> Outputs")
 

@@ -55,10 +55,10 @@ graph LR
 
   subgraph Outputs [Flake Outputs]
     direction TB
-    out_devShells_x86_64_linux_pyqt[devShells.x86_64-linux.pyqt]:::output
-    out_devShells_x86_64_linux_r[devShells.x86_64-linux.r]:::output
-    out_nixosConfigurations_desktop[nixosConfigurations.desktop]:::output
-    out_nixosConfigurations_laptop[nixosConfigurations.laptop]:::output
+    out_devShells_x86_64_linux_pyqt["<b>devShells.x86_64-linux.pyqt</b><hr/><i>Packages:</i><br/>- python3<br/>- ffmpeg<br/>- git<br/>- qtwayland<br/>- nodejs<br/><i>... (+1 more)</i>"]:::output
+    out_devShells_x86_64_linux_r["<b>devShells.x86_64-linux.r</b><hr/><i>Packages:</i><br/>- R<br/>- r-languageserver<br/>- r-rmarkdown<br/>- r-knitr<br/>- r-tidyverse<br/><i>... (+16 more)</i>"]:::output
+    out_nixosConfigurations_desktop["<b>nixosConfigurations.desktop</b><hr/><i>Packages:</i><br/>- slack<br/>- zoom<br/>- arduino-ide<br/>- git<br/>- joplin-desktop<br/><i>... (+301 more)</i>"]:::output
+    out_nixosConfigurations_laptop["<b>nixosConfigurations.laptop</b><hr/><i>Packages:</i><br/>- slack<br/>- zoom<br/>- arduino-ide<br/>- git<br/>- joplin-desktop<br/><i>... (+297 more)</i>"]:::output
   end
   Flake --> Outputs
 ```
