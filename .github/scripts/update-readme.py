@@ -63,10 +63,10 @@ def main():
     lines.append("graph LR")
     
     # Styling - NixOS Official Colors
-    lines.append("  classDef flake fill:#5277C3,stroke:#fff,stroke-width:2px,color:#fff,font-weight:bold,rx:20,ry:20;")
-    lines.append("  classDef input fill:#7EBAE4,stroke:#5277C3,stroke-width:2px,color:#111,rx:20,ry:20;")
-    lines.append("  classDef local fill:#7EBAE4,stroke:#5277C3,stroke-width:2px,color:#111,rx:20,ry:20;")
-    lines.append("  classDef output fill:#5277C3,stroke:#7EBAE4,stroke-width:2px,color:#fff,rx:20,ry:20;")
+    lines.append("  classDef flake fill:#5277C3,stroke:#fff,stroke-width:2px,color:#fff,font-weight:bold;")
+    lines.append("  classDef input fill:#7EBAE4,stroke:#5277C3,stroke-width:2px,color:#111;")
+    lines.append("  classDef local fill:#7EBAE4,stroke:#5277C3,stroke-width:2px,color:#111;")
+    lines.append("  classDef output fill:#5277C3,stroke:#7EBAE4,stroke-width:2px,color:#fff;")
     
     # Core Evaluator Node
     lines.append("  Flake(flake.nix):::flake")

@@ -17,10 +17,10 @@ The flowchart below visualizes the entire flake architecture. It is **auto-gener
 <!-- FLAKE_MAP_START -->
 ```mermaid
 graph LR
-  classDef flake fill:#5277C3,stroke:#fff,stroke-width:2px,color:#fff,font-weight:bold,rx:20,ry:20;
-  classDef input fill:#7EBAE4,stroke:#5277C3,stroke-width:2px,color:#111,rx:20,ry:20;
-  classDef local fill:#7EBAE4,stroke:#5277C3,stroke-width:2px,color:#111,rx:20,ry:20;
-  classDef output fill:#5277C3,stroke:#7EBAE4,stroke-width:2px,color:#fff,rx:20,ry:20;
+  classDef flake fill:#5277C3,stroke:#fff,stroke-width:2px,color:#fff,font-weight:bold;
+  classDef input fill:#7EBAE4,stroke:#5277C3,stroke-width:2px,color:#111;
+  classDef local fill:#7EBAE4,stroke:#5277C3,stroke-width:2px,color:#111;
+  classDef output fill:#5277C3,stroke:#7EBAE4,stroke-width:2px,color:#fff;
   Flake(flake.nix):::flake
 
   subgraph Inputs [Flake Inputs]
