@@ -8,32 +8,61 @@ import os
 def safe_id(s):
     return re.sub(r'[^a-zA-Z0-9]', '_', s)
 
-def get_packages_for_output(flake_attr):
-    if flake_attr.startswith("nixosConfigurations."):
-        host = flake_attr.split(".")[1]
-        cmd = ["nix", "eval", f".#nixosConfigurations.{host}.config.environment.systemPackages", "--apply", "map (p: p.name)", "--json"]
-    elif flake_attr.startswith("devShells."):
-        cmd = ["nix", "eval", f".#{flake_attr}.nativeBuildInputs", "--apply", "map (p: p.name)", "--json"]
-    else:
-        return []
+def clean_pkg_name(p):
+    m = re.match(r'^([a-zA-Z0-9_-]+?)-[0-9]', p)
+    return m.group(1) if m else p
 
+def get_nix_eval(cmd):
     try:
         result = subprocess.run(cmd, capture_output=True, text=True)
         if result.returncode == 0:
-            pkgs = json.loads(result.stdout)
-            # Remove version strings for cleaner display (e.g. "slack-4.49.89" -> "slack")
-            clean_pkgs = []
-            for p in pkgs:
-                # Basic heuristic to drop version suffix
-                m = re.match(r'^([a-zA-Z0-9_-]+?)-[0-9]', p)
-                if m:
-                    clean_pkgs.append(m.group(1))
-                else:
-                    clean_pkgs.append(p)
-            return clean_pkgs
+            return json.loads(result.stdout)
     except:
         pass
-    return []
+    return None
+
+def get_host_details(host):
+    details = {}
+    
+    # 1. System Packages
+    cmd_sys_pkgs = ["nix", "eval", f".#nixosConfigurations.{host}.config.environment.systemPackages", "--apply", "map (p: p.name)", "--json"]
+    sys_pkgs = get_nix_eval(cmd_sys_pkgs)
+    if sys_pkgs:
+        cleaned = sorted(list(set(clean_pkg_name(p) for p in sys_pkgs)), key=lambda x: x.lower())
+        details['System Packages'] = cleaned
+
+    # 2. Home Manager Users & Packages
+    cmd_hm_users = ["nix", "eval", f".#nixosConfigurations.{host}.config.home-manager.users", "--apply", "builtins.attrNames", "--json"]
+    hm_users = get_nix_eval(cmd_hm_users)
+    if hm_users:
+        details['Home-Manager'] = {}
+        for u in hm_users:
+            cmd_hm_pkgs = ["nix", "eval", f".#nixosConfigurations.{host}.config.home-manager.users.{u}.home.packages", "--apply", "map (p: p.name)", "--json"]
+            hm_pkgs = get_nix_eval(cmd_hm_pkgs)
+            if hm_pkgs:
+                cleaned = sorted(list(set(clean_pkg_name(p) for p in hm_pkgs)), key=lambda x: x.lower())
+                details['Home-Manager'][u] = cleaned
+
+    # 3. Systemd Services
+    cmd_services = ["nix", "eval", f".#nixosConfigurations.{host}.config.systemd.services", "--apply", "builtins.attrNames", "--json"]
+    services = get_nix_eval(cmd_services)
+    if services:
+        # Filter out common base systemd services to reduce noise if needed, or just sort them
+        # Let's just sort alphabetically to keep it fully dynamic
+        cleaned = sorted(list(set(services)), key=lambda x: x.lower())
+        details['Background Services'] = cleaned
+
+    return details
+
+def format_list(title, items, limit=5):
+    if not items:
+        return ""
+    html = f"<hr/><i>{title}:</i><br/>"
+    display = items[:limit]
+    html += "<br/>".join([f"- {p}" for p in display])
+    if len(items) > limit:
+        html += f"<br/><i>... (+{len(items)-limit} more)</i>"
+    return html
 
 def main():
     # 1. Get flake outputs
@@ -150,26 +179,31 @@ def main():
                     if isinstance(v, dict) and 'type' not in v:
                         for k2 in v.keys():
                             flake_attr = f"{out_type}.{k}.{k2}"
-                            pkgs = get_packages_for_output(flake_attr)
-                            
                             label_html = f"<b>{flake_attr}</b>"
-                            if pkgs:
-                                display_pkgs = pkgs[:5]
-                                label_html += f"<hr/><i>Packages:</i><br/>" + "<br/>".join([f"- {p}" for p in display_pkgs])
-                                if len(pkgs) > 5:
-                                    label_html += f"<br/><i>... (+{len(pkgs)-5} more)</i>"
+                            
+                            if out_type == "devShells":
+                                cmd = ["nix", "eval", f".#{flake_attr}.nativeBuildInputs", "--apply", "map (p: p.name)", "--json"]
+                                pkgs = get_nix_eval(cmd)
+                                if pkgs:
+                                    cleaned = sorted(list(set(clean_pkg_name(p) for p in pkgs)), key=lambda x: x.lower())
+                                    label_html += format_list("Build Inputs", cleaned)
                                     
                             lines.append(f"    out_{safe_id(out_type)}_{safe_id(k)}_{safe_id(k2)}[\"{label_html}\"]:::output")
                     else:
                         flake_attr = f"{out_type}.{k}"
-                        pkgs = get_packages_for_output(flake_attr)
-                        
                         label_html = f"<b>{flake_attr}</b>"
-                        if pkgs:
-                            display_pkgs = pkgs[:5]
-                            label_html += f"<hr/><i>Packages:</i><br/>" + "<br/>".join([f"- {p}" for p in display_pkgs])
-                            if len(pkgs) > 5:
-                                label_html += f"<br/><i>... (+{len(pkgs)-5} more)</i>"
+                        
+                        if out_type == "nixosConfigurations":
+                            host = k
+                            details = get_host_details(host)
+                            
+                            if 'System Packages' in details:
+                                label_html += format_list("System Packages", details['System Packages'], 4)
+                            if 'Home-Manager' in details:
+                                for u, pkgs in details['Home-Manager'].items():
+                                    label_html += format_list(f"HM Packages ({u})", pkgs, 4)
+                            if 'Background Services' in details:
+                                label_html += format_list("Background Services", details['Background Services'], 4)
                                 
                         lines.append(f"    out_{safe_id(out_type)}_{safe_id(k)}[\"{label_html}\"]:::output")
         lines.append("  end")

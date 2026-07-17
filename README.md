@@ -55,10 +55,10 @@ graph LR
 
   subgraph Outputs [Flake Outputs]
     direction TB
-    out_devShells_x86_64_linux_pyqt["<b>devShells.x86_64-linux.pyqt</b><hr/><i>Packages:</i><br/>- python3<br/>- ffmpeg<br/>- git<br/>- qtwayland<br/>- nodejs<br/><i>... (+1 more)</i>"]:::output
-    out_devShells_x86_64_linux_r["<b>devShells.x86_64-linux.r</b><hr/><i>Packages:</i><br/>- R<br/>- r-languageserver<br/>- r-rmarkdown<br/>- r-knitr<br/>- r-tidyverse<br/><i>... (+16 more)</i>"]:::output
-    out_nixosConfigurations_desktop["<b>nixosConfigurations.desktop</b><hr/><i>Packages:</i><br/>- slack<br/>- zoom<br/>- arduino-ide<br/>- git<br/>- joplin-desktop<br/><i>... (+301 more)</i>"]:::output
-    out_nixosConfigurations_laptop["<b>nixosConfigurations.laptop</b><hr/><i>Packages:</i><br/>- slack<br/>- zoom<br/>- arduino-ide<br/>- git<br/>- joplin-desktop<br/><i>... (+297 more)</i>"]:::output
+    out_devShells_x86_64_linux_pyqt["<b>devShells.x86_64-linux.pyqt</b><hr/><i>Build Inputs:</i><br/>- cargo<br/>- ffmpeg<br/>- git<br/>- nodejs<br/>- python3<br/><i>... (+1 more)</i>"]:::output
+    out_devShells_x86_64_linux_r["<b>devShells.x86_64-linux.r</b><hr/><i>Build Inputs:</i><br/>- cmake<br/>- curl<br/>- fontconfig<br/>- fribidi<br/>- gcc-wrapper<br/><i>... (+16 more)</i>"]:::output
+    out_nixosConfigurations_desktop["<b>nixosConfigurations.desktop</b><hr/><i>System Packages:</i><br/>- accountsservice<br/>- acl<br/>- adwaita-icon-theme<br/>- apparmor-bin-utils<br/><i>... (+217 more)</i><hr/><i>HM Packages (user):</i><br/>- bat<br/>- btop<br/>- direnv<br/>- dummy-fc-dir1<br/><i>... (+19 more)</i><hr/><i>Background Services:</i><br/>- accounts-daemon<br/>- apparmor<br/>- automatic-timezoned<br/>- automatic-timezoned-geoclue-agent<br/><i>... (+91 more)</i>"]:::output
+    out_nixosConfigurations_laptop["<b>nixosConfigurations.laptop</b><hr/><i>System Packages:</i><br/>- accountsservice<br/>- acl<br/>- adwaita-icon-theme<br/>- apparmor-bin-utils<br/><i>... (+213 more)</i><hr/><i>HM Packages (user):</i><br/>- bat<br/>- btop<br/>- direnv<br/>- dummy-fc-dir1<br/><i>... (+19 more)</i><hr/><i>Background Services:</i><br/>- accounts-daemon<br/>- apparmor<br/>- automatic-timezoned<br/>- automatic-timezoned-geoclue-agent<br/><i>... (+91 more)</i>"]:::output
   end
   Flake --> Outputs
 ```
