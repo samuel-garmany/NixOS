@@ -8,7 +8,7 @@ Welcome to my NixOS configuration!
 ```mermaid
 mindmap
   root((flake.nix))
-    inputs
+    Inputs
       flake-parts
       home-manager
       lanzaboote
@@ -16,11 +16,11 @@ mindmap
       nixpkgs
       nvf
     Local Repository
-      ./hosts
+      Hosts
         desktop
         laptop
-      ./modules
-        apps
+      Modules
+        Apps
           communication
           dev
           firefox
@@ -34,13 +34,13 @@ mindmap
           thunderbird
           writing
           zotero
-        cli
+        Cli
           bat
           eza
           fzf
           utils
           zoxide
-        core
+        Core
           boot
           hardware
           locale
@@ -50,20 +50,20 @@ mindmap
           packages
           security
           tailscale
-        desktop
+        Desktop
           audio
           fonts
           gnome
           printing
-        shells
+        Shells
           direnv
           fish
           pyqt
           r
           starship
-        users
+        Users
           user
-    outputs
+    Outputs
       devShells
         x86_64-linux
           pyqt

@@ -67,9 +67,9 @@ def main():
     lines.append("mindmap")
     lines.append("  root((flake.nix))")
     
-    # Use accurate flake terminology (lowercase attributes)
+    # Use accurate flake terminology but with pretty capitalized labels
     if inputs:
-        lines.append("    inputs")
+        lines.append("    Inputs")
         for i in sorted(inputs):
             lines.append(f"      {i}")
             
@@ -78,23 +78,23 @@ def main():
         lines.append("    Local Repository")
         
         if hosts:
-            lines.append("      ./hosts")
+            lines.append("      Hosts")
             for h in sorted(hosts):
                 lines.append(f"        {h}")
                 
         if modules:
-            lines.append("      ./modules")
+            lines.append("      Modules")
             for cat in sorted(modules.keys()):
                 if cat == "modules":
-                    cat_name = "(root)"
+                    cat_name = "(Root)"
                 else:
-                    cat_name = cat
+                    cat_name = cat.capitalize()
                 lines.append(f"        {cat_name}")
                 for mod in sorted(modules[cat]):
                     lines.append(f"          {mod}")
                 
     if outputs:
-        lines.append("    outputs")
+        lines.append("    Outputs")
         for out_type, out_val in outputs.items():
             lines.append(f"      {out_type}")
             if isinstance(out_val, dict):
