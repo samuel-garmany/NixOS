@@ -16,7 +16,7 @@ The flowchart below visualizes the entire flake architecture. It is **auto-gener
 
 <!-- FLAKE_MAP_START -->
 ```mermaid
-graph LR
+graph TD
   classDef flake fill:#3b82f6,stroke:#1e3a8a,stroke-width:3px,color:#fff,font-weight:bold,rx:10,ry:10;
   classDef input fill:#10b981,stroke:#064e3b,color:#fff,rx:5,ry:5;
   classDef local fill:#f59e0b,stroke:#78350f,color:#fff,rx:5,ry:5;

@@ -123,7 +123,7 @@ def main():
     # Generate Flowchart
     lines = []
     lines.append("```mermaid")
-    lines.append("graph LR")
+    lines.append("graph TD")
     
     # Styling
     lines.append("  classDef flake fill:#3b82f6,stroke:#1e3a8a,stroke-width:3px,color:#fff,font-weight:bold,rx:10,ry:10;")
