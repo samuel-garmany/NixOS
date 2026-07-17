@@ -21,7 +21,9 @@ graph TD
   classDef input fill:#7EBAE4,stroke:#5277C3,stroke-width:2px,color:#111,rx:5,ry:5;
   classDef local fill:#7EBAE4,stroke:#5277C3,stroke-width:2px,color:#111,rx:5,ry:5;
   classDef output fill:#5277C3,stroke:#7EBAE4,stroke-width:2px,color:#fff,rx:5,ry:5;
-  Flake["<b>3. Evaluator (flake.nix)</b><hr/><i>Merges inputs with local<br/>code to produce outputs</i>"]:::flake
+  Flake["3. Evaluator (flake.nix)
+Merges inputs with local
+code to produce outputs"]:::flake
 
   subgraph Inputs [1. External Flake Inputs]
     direction TB
@@ -36,13 +38,52 @@ graph TD
 
   subgraph Local [2. Local Repository (Source Code)]
     direction TB
-    h_Hosts["<b>hosts/</b><hr/>- desktop<br/>- laptop"]:::local
-    m_apps["<b>modules/apps/</b><hr/>- communication.nix<br/>- dev.nix<br/>- firefox.nix<br/>- gaming.nix<br/>- git.nix<br/>- joplin.nix<br/>- media.nix<br/>- neovim.nix<br/>- nextcloud.nix<br/>- office.nix<br/>- thunderbird.nix<br/>- writing.nix<br/>- zotero.nix"]:::local
-    m_cli["<b>modules/cli/</b><hr/>- bat.nix<br/>- eza.nix<br/>- fzf.nix<br/>- utils.nix<br/>- zoxide.nix"]:::local
-    m_core["<b>modules/core/</b><hr/>- boot.nix<br/>- hardware.nix<br/>- locale.nix<br/>- networking.nix<br/>- nix.nix<br/>- options.nix<br/>- packages.nix<br/>- security.nix<br/>- tailscale.nix"]:::local
-    m_desktop["<b>modules/desktop/</b><hr/>- audio.nix<br/>- fonts.nix<br/>- gnome.nix<br/>- printing.nix"]:::local
-    m_shells["<b>modules/shells/</b><hr/>- direnv.nix<br/>- fish.nix<br/>- pyqt.nix<br/>- r.nix<br/>- starship.nix"]:::local
-    m_users["<b>modules/users/</b><hr/>- user.nix"]:::local
+    h_Hosts["hosts/
+- desktop
+- laptop"]:::local
+    m_apps["modules/apps/
+- communication.nix
+- dev.nix
+- firefox.nix
+- gaming.nix
+- git.nix
+- joplin.nix
+- media.nix
+- neovim.nix
+- nextcloud.nix
+- office.nix
+- thunderbird.nix
+- writing.nix
+- zotero.nix"]:::local
+    m_cli["modules/cli/
+- bat.nix
+- eza.nix
+- fzf.nix
+- utils.nix
+- zoxide.nix"]:::local
+    m_core["modules/core/
+- boot.nix
+- hardware.nix
+- locale.nix
+- networking.nix
+- nix.nix
+- options.nix
+- packages.nix
+- security.nix
+- tailscale.nix"]:::local
+    m_desktop["modules/desktop/
+- audio.nix
+- fonts.nix
+- gnome.nix
+- printing.nix"]:::local
+    m_shells["modules/shells/
+- direnv.nix
+- fish.nix
+- pyqt.nix
+- r.nix
+- starship.nix"]:::local
+    m_users["modules/users/
+- user.nix"]:::local
   end
   Local --> Flake
 

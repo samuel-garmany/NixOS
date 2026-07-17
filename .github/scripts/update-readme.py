@@ -71,7 +71,7 @@ def main():
     lines.append("  classDef output fill:#5277C3,stroke:#7EBAE4,stroke-width:2px,color:#fff,rx:5,ry:5;")
     
     # Core Evaluator Node
-    lines.append("  Flake[\"<b>3. Evaluator (flake.nix)</b><hr/><i>Merges inputs with local<br/>code to produce outputs</i>\"]:::flake")
+    lines.append("  Flake[\"3. Evaluator (flake.nix)\\nMerges inputs with local\\ncode to produce outputs\"]:::flake")
     
     # 1. Inputs
     if inputs:
@@ -91,15 +91,15 @@ def main():
         
         # Hosts grouped into one node to save space, or individual nodes
         if hosts:
-            host_list = "<br/>".join([f"- {h}" for h in sorted(hosts)])
-            lines.append(f"    h_Hosts[\"<b>hosts/</b><hr/>{host_list}\"]:::local")
+            host_list = "\\n".join([f"- {h}" for h in sorted(hosts)])
+            lines.append(f"    h_Hosts[\"hosts/\\n{host_list}\"]:::local")
             
         # Modules get one node per directory, with files listed as text
         if modules:
             for cat in sorted(modules.keys()):
                 cat_name = "(Root)" if cat == "modules" else cat.capitalize()
-                file_list = "<br/>".join([f"- {f}" for f in sorted(modules[cat])])
-                lines.append(f"    m_{safe_id(cat)}[\"<b>modules/{cat}/</b><hr/>{file_list}\"]:::local")
+                file_list = "\\n".join([f"- {f}" for f in sorted(modules[cat])])
+                lines.append(f"    m_{safe_id(cat)}[\"modules/{cat}/\\n{file_list}\"]:::local")
                 
         lines.append("  end")
         lines.append("  Local --> Flake")
