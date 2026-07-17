@@ -103,12 +103,6 @@
                 installation_mode = "force_installed";
                 updates_disabled = true;
               };
-
-              "zotero@chnm.gmu.edu" = {
-                install_url = "https://www.zotero.org/download/connector/dl?browser=firefox";
-                installation_mode = "force_installed";
-                updates_disabled = true;
-              };
             };
         };
       };

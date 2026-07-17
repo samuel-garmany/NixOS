@@ -21,13 +21,11 @@ def main():
         result = subprocess.run(["nix", "flake", "metadata", "--json"], capture_output=True, text=True)
         if result.returncode == 0:
             meta = json.loads(result.stdout)
-            # The flake inputs are usually stored in locks.nodes.root.inputs
             root_inputs = meta.get("locks", {}).get("nodes", {}).get("root", {}).get("inputs", {})
             inputs = sorted(list(root_inputs.keys()))
     except Exception as e:
         print(f"Warning: could not get flake metadata: {e}", file=sys.stderr)
 
-    # Fallback to regex if metadata fails or is empty
     if not inputs:
         try:
             with open("flake.nix") as f:
@@ -69,38 +67,43 @@ def main():
     lines.append("mindmap")
     lines.append("  root((flake.nix))")
     
+    # Use accurate flake terminology (lowercase attributes)
     if inputs:
-        lines.append("    Inputs")
+        lines.append("    inputs")
         for i in sorted(inputs):
             lines.append(f"      {i}")
             
-    if hosts:
-        lines.append("    Hosts")
-        for h in sorted(hosts):
-            lines.append(f"      {h}")
-            
-    if modules:
-        lines.append("    Modules")
-        for cat in sorted(modules.keys()):
-            if cat == "modules":
-                cat_name = "Misc"
-            else:
-                cat_name = cat.capitalize()
-            lines.append(f"      {cat_name}")
-            for mod in sorted(modules[cat]):
-                lines.append(f"        {mod}")
+    # Differentiate local repository structure from flake outputs
+    if hosts or modules:
+        lines.append("    Local Repository")
+        
+        if hosts:
+            lines.append("      ./hosts")
+            for h in sorted(hosts):
+                lines.append(f"        {h}")
+                
+        if modules:
+            lines.append("      ./modules")
+            for cat in sorted(modules.keys()):
+                if cat == "modules":
+                    cat_name = "(root)"
+                else:
+                    cat_name = cat
+                lines.append(f"        {cat_name}")
+                for mod in sorted(modules[cat]):
+                    lines.append(f"          {mod}")
                 
     if outputs:
-        lines.append("    Outputs")
+        lines.append("    outputs")
         for out_type, out_val in outputs.items():
             lines.append(f"      {out_type}")
             if isinstance(out_val, dict):
                 for k, v in out_val.items():
+                    lines.append(f"        {k}")
                     if isinstance(v, dict) and 'type' not in v:
+                        # Print system-specific sub-keys (like devShells.x86_64-linux.pyqt)
                         for k2 in v.keys():
-                            lines.append(f"        {k2}")
-                    else:
-                        lines.append(f"        {k}")
+                            lines.append(f"          {k2}")
     
     lines.append("```")
     mermaid_text = "\n".join(lines)
