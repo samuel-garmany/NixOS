@@ -3,12 +3,8 @@ name: Update Flake Map in README
 on:
   push:
     paths:
-      - 'flake.nix'
       - 'flake.lock'
-      - 'hosts/**'
-      - 'modules/**'
-      - '.github/workflows/update-flake-map.yml'
-      - '.github/scripts/update-readme.py'
+      - '**/*.nix'
   workflow_dispatch:
 
 jobs:
