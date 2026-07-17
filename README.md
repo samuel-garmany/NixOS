@@ -17,48 +17,42 @@ The flowchart below visualizes the entire flake architecture. It is **auto-gener
 <!-- FLAKE_MAP_START -->
 ```mermaid
 graph LR
-  classDef flake fill:#5277C3,stroke:#fff,stroke-width:2px,color:#fff,font-weight:bold;
-  classDef input fill:#7EBAE4,stroke:#5277C3,stroke-width:2px,color:#111;
-  classDef local fill:#7EBAE4,stroke:#5277C3,stroke-width:2px,color:#111;
-  classDef output fill:#5277C3,stroke:#7EBAE4,stroke-width:2px,color:#fff;
-  Flake(flake.nix):::flake
+  classDef flake fill:#5277C3,stroke:#fff,stroke-width:2px,color:#fff,font-weight:bold,rx:10,ry:10;
+  classDef input fill:#E3F2FD,stroke:#5277C3,stroke-width:2px,color:#1565C0,rx:5,ry:5;
+  classDef local fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20,rx:5,ry:5;
+  classDef output fill:#FFF3E0,stroke:#E65100,stroke-width:2px,color:#E65100,rx:5,ry:5;
+  Flake("flake.nix"):::flake
 
-  subgraph Inputs [Flake Inputs]
+  subgraph Inputs ["Flake Inputs"]
     direction TB
-    in_flake_parts(flake-parts):::input
-    in_home_manager(home-manager):::input
-    in_lanzaboote(lanzaboote):::input
-    in_nixos_hardware(nixos-hardware):::input
-    in_nixpkgs(nixpkgs):::input
-    in_nvf(nvf):::input
+    in_flake_parts(["flake-parts"]):::input
+    in_home_manager(["home-manager"]):::input
+    in_lanzaboote(["lanzaboote"]):::input
+    in_nixos_hardware(["nixos-hardware"]):::input
+    in_nixpkgs(["nixpkgs"]):::input
+    in_nvf(["nvf"]):::input
   end
   Inputs --> Flake
 
-  subgraph Local [Local Repository]
+  subgraph Local ["Local Repository"]
     direction TB
-    h_Hosts(hosts/
-desktop, laptop):::local
-    m_apps(modules/apps/
-communication, dev, firefox, gaming, git, joplin, media, neovim, nextcloud, office, thunderbird, writing, zotero):::local
-    m_cli(modules/cli/
-bat, eza, fzf, utils, zoxide):::local
-    m_core(modules/core/
-boot, hardware, locale, networking, nix, options, packages, security, tailscale):::local
-    m_desktop(modules/desktop/
-audio, fonts, gnome, printing):::local
-    m_shells(modules/shells/
-direnv, fish, pyqt, r, starship):::local
-    m_users(modules/users/
-user):::local
+    loc_hosts["<b>hosts/</b><br/><small>desktop, laptop</small>"]:::local
+    loc_modules["<b>modules/</b><br/><small>apps, cli, core, desktop, shells, users</small>"]:::local
   end
   Local --> Flake
 
-  subgraph Outputs [Flake Outputs]
+  subgraph Outputs ["Flake Outputs"]
     direction TB
-    out_devShells_x86_64_linux_pyqt(devShells.x86_64-linux.pyqt):::output
-    out_devShells_x86_64_linux_r(devShells.x86_64-linux.r):::output
-    out_nixosConfigurations_desktop(nixosConfigurations.desktop):::output
-    out_nixosConfigurations_laptop(nixosConfigurations.laptop):::output
+    subgraph out_devShells ["devShells"]
+      direction TB
+      out_devShells_x86_64_linux_pyqt("x86_64-linux.pyqt"):::output
+      out_devShells_x86_64_linux_r("x86_64-linux.r"):::output
+    end
+    subgraph out_nixosConfigurations ["nixosConfigurations"]
+      direction TB
+      out_nixosConfigurations_desktop("desktop"):::output
+      out_nixosConfigurations_laptop("laptop"):::output
+    end
   end
   Flake --> Outputs
 ```
