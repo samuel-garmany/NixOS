@@ -21,9 +21,9 @@ graph TD
   classDef input fill:#7EBAE4,stroke:#5277C3,stroke-width:2px,color:#111,rx:5,ry:5;
   classDef local fill:#7EBAE4,stroke:#5277C3,stroke-width:2px,color:#111,rx:5,ry:5;
   classDef output fill:#5277C3,stroke:#7EBAE4,stroke-width:2px,color:#fff,rx:5,ry:5;
-  Flake[flake.nix]:::flake
+  Flake["<b>3. Evaluator (flake.nix)</b><hr/><i>Merges inputs with local<br/>code to produce outputs</i>"]:::flake
 
-  subgraph Inputs [Flake Inputs]
+  subgraph Inputs [1. External Flake Inputs]
     direction TB
     in_flake_parts[flake-parts]:::input
     in_home_manager[home-manager]:::input
@@ -34,26 +34,19 @@ graph TD
   end
   Inputs --> Flake
 
-  subgraph Local [Local Repository]
+  subgraph Local [2. Local Repository (Source Code)]
     direction TB
-    subgraph h_Hosts [Hosts]
-      direction TB
-      h_desktop[desktop]:::local
-      h_laptop[laptop]:::local
-    end
-    subgraph m_Modules [Modules]
-      direction TB
-      m_apps[Apps]:::local
-      m_cli[Cli]:::local
-      m_core[Core]:::local
-      m_desktop[Desktop]:::local
-      m_shells[Shells]:::local
-      m_users[Users]:::local
-    end
+    h_Hosts["<b>hosts/</b><hr/>- desktop<br/>- laptop"]:::local
+    m_apps["<b>modules/apps/</b><hr/>- communication.nix<br/>- dev.nix<br/>- firefox.nix<br/>- gaming.nix<br/>- git.nix<br/>- joplin.nix<br/>- media.nix<br/>- neovim.nix<br/>- nextcloud.nix<br/>- office.nix<br/>- thunderbird.nix<br/>- writing.nix<br/>- zotero.nix"]:::local
+    m_cli["<b>modules/cli/</b><hr/>- bat.nix<br/>- eza.nix<br/>- fzf.nix<br/>- utils.nix<br/>- zoxide.nix"]:::local
+    m_core["<b>modules/core/</b><hr/>- boot.nix<br/>- hardware.nix<br/>- locale.nix<br/>- networking.nix<br/>- nix.nix<br/>- options.nix<br/>- packages.nix<br/>- security.nix<br/>- tailscale.nix"]:::local
+    m_desktop["<b>modules/desktop/</b><hr/>- audio.nix<br/>- fonts.nix<br/>- gnome.nix<br/>- printing.nix"]:::local
+    m_shells["<b>modules/shells/</b><hr/>- direnv.nix<br/>- fish.nix<br/>- pyqt.nix<br/>- r.nix<br/>- starship.nix"]:::local
+    m_users["<b>modules/users/</b><hr/>- user.nix"]:::local
   end
   Local --> Flake
 
-  subgraph Outputs [Flake Outputs]
+  subgraph Outputs [4. Final System Outputs]
     direction TB
     out_devShells_x86_64_linux_pyqt[devShells.x86_64-linux.pyqt]:::output
     out_devShells_x86_64_linux_r[devShells.x86_64-linux.r]:::output

@@ -9,6 +9,7 @@ def safe_id(s):
     return re.sub(r'[^a-zA-Z0-9]', '_', s)
 
 def main():
+    # --- 1. Fetch Data ---
     outputs = {}
     try:
         result = subprocess.run(["nix", "flake", "show", "--json"], capture_output=True, text=True)
@@ -42,11 +43,15 @@ def main():
         except:
             pass
 
-    modules = []
+    modules = {}
     if os.path.exists("modules"):
-        for item in os.listdir("modules"):
-            if os.path.isdir(os.path.join("modules", item)):
-                modules.append(item)
+        for root, dirs, files in os.walk("modules"):
+            for file in files:
+                if file.endswith(".nix"):
+                    category = os.path.basename(root)
+                    if category not in modules:
+                        modules[category] = []
+                    modules[category].append(file)
 
     hosts = []
     if os.path.exists("hosts"):
@@ -54,54 +59,55 @@ def main():
             if os.path.isdir(os.path.join("hosts", item)):
                 hosts.append(item)
 
+    # --- 2. Generate Mermaid ---
     lines = []
     lines.append("```mermaid")
     lines.append("graph TD")
     
-    # Styling - NixOS Official Colors (#5277C3 and #7EBAE4)
+    # Styling - NixOS Official Colors
     lines.append("  classDef flake fill:#5277C3,stroke:#fff,stroke-width:2px,color:#fff,font-weight:bold,rx:10,ry:10;")
     lines.append("  classDef input fill:#7EBAE4,stroke:#5277C3,stroke-width:2px,color:#111,rx:5,ry:5;")
     lines.append("  classDef local fill:#7EBAE4,stroke:#5277C3,stroke-width:2px,color:#111,rx:5,ry:5;")
     lines.append("  classDef output fill:#5277C3,stroke:#7EBAE4,stroke-width:2px,color:#fff,rx:5,ry:5;")
     
-    lines.append("  Flake[flake.nix]:::flake")
+    # Core Evaluator Node
+    lines.append("  Flake[\"<b>3. Evaluator (flake.nix)</b><hr/><i>Merges inputs with local<br/>code to produce outputs</i>\"]:::flake")
     
+    # 1. Inputs
     if inputs:
         lines.append("")
-        lines.append("  subgraph Inputs [Flake Inputs]")
+        lines.append("  subgraph Inputs [1. External Flake Inputs]")
         lines.append("    direction TB")
         for i in sorted(inputs):
             lines.append(f"    in_{safe_id(i)}[{i}]:::input")
         lines.append("  end")
         lines.append("  Inputs --> Flake")
 
+    # 2. Local Repository
     if hosts or modules:
         lines.append("")
-        lines.append("  subgraph Local [Local Repository]")
+        lines.append("  subgraph Local [2. Local Repository (Source Code)]")
         lines.append("    direction TB")
         
+        # Hosts grouped into one node to save space, or individual nodes
         if hosts:
-            lines.append("    subgraph h_Hosts [Hosts]")
-            lines.append("      direction TB")
-            for h in sorted(hosts):
-                lines.append(f"      h_{safe_id(h)}[{h}]:::local")
-            lines.append("    end")
+            host_list = "<br/>".join([f"- {h}" for h in sorted(hosts)])
+            lines.append(f"    h_Hosts[\"<b>hosts/</b><hr/>{host_list}\"]:::local")
             
+        # Modules get one node per directory, with files listed as text
         if modules:
-            lines.append("    subgraph m_Modules [Modules]")
-            lines.append("      direction TB")
-            for cat in sorted(modules):
-                cat_name = cat.capitalize()
-                lines.append(f"      m_{safe_id(cat)}[{cat_name}]:::local")
-            lines.append("    end")
-        
+            for cat in sorted(modules.keys()):
+                cat_name = "(Root)" if cat == "modules" else cat.capitalize()
+                file_list = "<br/>".join([f"- {f}" for f in sorted(modules[cat])])
+                lines.append(f"    m_{safe_id(cat)}[\"<b>modules/{cat}/</b><hr/>{file_list}\"]:::local")
+                
         lines.append("  end")
         lines.append("  Local --> Flake")
 
-    # Outputs
+    # 4. Outputs
     if outputs:
         lines.append("")
-        lines.append("  subgraph Outputs [Flake Outputs]")
+        lines.append("  subgraph Outputs [4. Final System Outputs]")
         lines.append("    direction TB")
         
         for out_type, out_val in outputs.items():
@@ -122,6 +128,7 @@ def main():
     lines.append("```")
     mermaid_text = "\n".join(lines)
 
+    # --- 3. Write to README ---
     readme_path = "README.md"
     try:
         with open(readme_path, "r") as f:
