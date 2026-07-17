@@ -239,8 +239,7 @@ def main():
                                 display_pkgs = unique_pkgs[:3] + common_pkgs[:2]
                                 for idx, p in enumerate(display_pkgs):
                                     p_id = f"{cat_id}_p{idx}"
-                                    flag = "⭐ " if p in unique_pkgs else ""
-                                    lines.append(f"    {p_id}[{flag}{p}]:::item")
+                                    lines.append(f"    {p_id}[{p}]:::item")
                                     lines.append(f"    {cat_id} --- {p_id}")
                                     
                                 if len(my_pkgs) > len(display_pkgs):

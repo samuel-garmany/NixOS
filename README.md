@@ -135,25 +135,25 @@ graph TD
     out_nixosConfigurations_desktop[nixosConfigurations.desktop]:::output
     out_nixosConfigurations_desktop_syspkgs[System Packages]:::detail
     out_nixosConfigurations_desktop --- out_nixosConfigurations_desktop_syspkgs
-    out_nixosConfigurations_desktop_syspkgs_p0[⭐ steam]:::item
+    out_nixosConfigurations_desktop_syspkgs_p0[steam]:::item
     out_nixosConfigurations_desktop_syspkgs --- out_nixosConfigurations_desktop_syspkgs_p0
-    out_nixosConfigurations_desktop_syspkgs_p1[⭐ lutris]:::item
+    out_nixosConfigurations_desktop_syspkgs_p1[lutris]:::item
     out_nixosConfigurations_desktop_syspkgs --- out_nixosConfigurations_desktop_syspkgs_p1
-    out_nixosConfigurations_desktop_syspkgs_p2[⭐ discord]:::item
+    out_nixosConfigurations_desktop_syspkgs_p2[discord]:::item
     out_nixosConfigurations_desktop_syspkgs --- out_nixosConfigurations_desktop_syspkgs_p2
     out_nixosConfigurations_desktop_syspkgs_p3[xz]:::item
     out_nixosConfigurations_desktop_syspkgs --- out_nixosConfigurations_desktop_syspkgs_p3
-    out_nixosConfigurations_desktop_syspkgs_p4[git]:::item
+    out_nixosConfigurations_desktop_syspkgs_p4[gdm]:::item
     out_nixosConfigurations_desktop_syspkgs --- out_nixosConfigurations_desktop_syspkgs_p4
     out_nixosConfigurations_desktop_syspkgs_more[...+ 216 more]:::item
     out_nixosConfigurations_desktop_syspkgs --- out_nixosConfigurations_desktop_syspkgs_more
     out_nixosConfigurations_desktop_hm_user[HM Packages: user]:::detail
     out_nixosConfigurations_desktop --- out_nixosConfigurations_desktop_hm_user
-    out_nixosConfigurations_desktop_hm_user_p0[jq]:::item
+    out_nixosConfigurations_desktop_hm_user_p0[fd]:::item
     out_nixosConfigurations_desktop_hm_user --- out_nixosConfigurations_desktop_hm_user_p0
-    out_nixosConfigurations_desktop_hm_user_p1[fd]:::item
+    out_nixosConfigurations_desktop_hm_user_p1[jq]:::item
     out_nixosConfigurations_desktop_hm_user --- out_nixosConfigurations_desktop_hm_user_p1
-    out_nixosConfigurations_desktop_hm_user_p2[git]:::item
+    out_nixosConfigurations_desktop_hm_user_p2[bat]:::item
     out_nixosConfigurations_desktop_hm_user --- out_nixosConfigurations_desktop_hm_user_p2
     out_nixosConfigurations_desktop_hm_user_more[...+ 20 more]:::item
     out_nixosConfigurations_desktop_hm_user --- out_nixosConfigurations_desktop_hm_user_more
@@ -163,30 +163,30 @@ graph TD
     out_nixosConfigurations_desktop_services --- out_nixosConfigurations_desktop_services_p0
     out_nixosConfigurations_desktop_services_p1[iwd]:::item
     out_nixosConfigurations_desktop_services --- out_nixosConfigurations_desktop_services_p1
-    out_nixosConfigurations_desktop_services_p2[dbus]:::item
+    out_nixosConfigurations_desktop_services_p2[nscd]:::item
     out_nixosConfigurations_desktop_services --- out_nixosConfigurations_desktop_services_p2
     out_nixosConfigurations_desktop_services_more[...+ 92 more]:::item
     out_nixosConfigurations_desktop_services --- out_nixosConfigurations_desktop_services_more
     out_nixosConfigurations_laptop[nixosConfigurations.laptop]:::output
     out_nixosConfigurations_laptop_syspkgs[System Packages]:::detail
     out_nixosConfigurations_laptop --- out_nixosConfigurations_laptop_syspkgs
-    out_nixosConfigurations_laptop_syspkgs_p0[⭐ framework-tool]:::item
+    out_nixosConfigurations_laptop_syspkgs_p0[framework-tool]:::item
     out_nixosConfigurations_laptop_syspkgs --- out_nixosConfigurations_laptop_syspkgs_p0
-    out_nixosConfigurations_laptop_syspkgs_p1[⭐ iio-sensor-proxy]:::item
+    out_nixosConfigurations_laptop_syspkgs_p1[iio-sensor-proxy]:::item
     out_nixosConfigurations_laptop_syspkgs --- out_nixosConfigurations_laptop_syspkgs_p1
     out_nixosConfigurations_laptop_syspkgs_p2[xz]:::item
     out_nixosConfigurations_laptop_syspkgs --- out_nixosConfigurations_laptop_syspkgs_p2
-    out_nixosConfigurations_laptop_syspkgs_p3[git]:::item
+    out_nixosConfigurations_laptop_syspkgs_p3[gdm]:::item
     out_nixosConfigurations_laptop_syspkgs --- out_nixosConfigurations_laptop_syspkgs_p3
     out_nixosConfigurations_laptop_syspkgs_more[...+ 213 more]:::item
     out_nixosConfigurations_laptop_syspkgs --- out_nixosConfigurations_laptop_syspkgs_more
     out_nixosConfigurations_laptop_hm_user[HM Packages: user]:::detail
     out_nixosConfigurations_laptop --- out_nixosConfigurations_laptop_hm_user
-    out_nixosConfigurations_laptop_hm_user_p0[jq]:::item
+    out_nixosConfigurations_laptop_hm_user_p0[fd]:::item
     out_nixosConfigurations_laptop_hm_user --- out_nixosConfigurations_laptop_hm_user_p0
-    out_nixosConfigurations_laptop_hm_user_p1[fd]:::item
+    out_nixosConfigurations_laptop_hm_user_p1[jq]:::item
     out_nixosConfigurations_laptop_hm_user --- out_nixosConfigurations_laptop_hm_user_p1
-    out_nixosConfigurations_laptop_hm_user_p2[git]:::item
+    out_nixosConfigurations_laptop_hm_user_p2[bat]:::item
     out_nixosConfigurations_laptop_hm_user --- out_nixosConfigurations_laptop_hm_user_p2
     out_nixosConfigurations_laptop_hm_user_more[...+ 20 more]:::item
     out_nixosConfigurations_laptop_hm_user --- out_nixosConfigurations_laptop_hm_user_more
@@ -196,7 +196,7 @@ graph TD
     out_nixosConfigurations_laptop_services --- out_nixosConfigurations_laptop_services_p0
     out_nixosConfigurations_laptop_services_p1[iwd]:::item
     out_nixosConfigurations_laptop_services --- out_nixosConfigurations_laptop_services_p1
-    out_nixosConfigurations_laptop_services_p2[dbus]:::item
+    out_nixosConfigurations_laptop_services_p2[nscd]:::item
     out_nixosConfigurations_laptop_services --- out_nixosConfigurations_laptop_services_p2
     out_nixosConfigurations_laptop_services_more[...+ 92 more]:::item
     out_nixosConfigurations_laptop_services --- out_nixosConfigurations_laptop_services_more
