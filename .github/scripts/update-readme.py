@@ -42,15 +42,11 @@ def main():
         except:
             pass
 
-    modules = {}
+    modules = []
     if os.path.exists("modules"):
-        for root, dirs, files in os.walk("modules"):
-            for file in files:
-                if file.endswith(".nix"):
-                    category = os.path.basename(root)
-                    if category not in modules:
-                        modules[category] = []
-                    modules[category].append(file)
+        for item in os.listdir("modules"):
+            if os.path.isdir(os.path.join("modules", item)):
+                modules.append(item)
 
     hosts = []
     if os.path.exists("hosts"):
@@ -94,13 +90,9 @@ def main():
         if modules:
             lines.append("    subgraph m_Modules [Modules]")
             lines.append("      direction TB")
-            for cat in sorted(modules.keys()):
-                cat_name = "(Root)" if cat == "modules" else cat.capitalize()
-                lines.append(f"      subgraph cat_{safe_id(cat)} [{cat_name}]")
-                lines.append("        direction TB")
-                for mod in sorted(modules[cat]):
-                    lines.append(f"        m_{safe_id(cat)}_{safe_id(mod)}[{mod}]:::local")
-                lines.append("      end")
+            for cat in sorted(modules):
+                cat_name = cat.capitalize()
+                lines.append(f"      m_{safe_id(cat)}[{cat_name}]:::local")
             lines.append("    end")
         
         lines.append("  end")

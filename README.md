@@ -43,61 +43,12 @@ graph TD
     end
     subgraph m_Modules [Modules]
       direction TB
-      subgraph cat_apps [Apps]
-        direction TB
-        m_apps_communication_nix[communication.nix]:::local
-        m_apps_dev_nix[dev.nix]:::local
-        m_apps_firefox_nix[firefox.nix]:::local
-        m_apps_gaming_nix[gaming.nix]:::local
-        m_apps_git_nix[git.nix]:::local
-        m_apps_joplin_nix[joplin.nix]:::local
-        m_apps_media_nix[media.nix]:::local
-        m_apps_neovim_nix[neovim.nix]:::local
-        m_apps_nextcloud_nix[nextcloud.nix]:::local
-        m_apps_office_nix[office.nix]:::local
-        m_apps_thunderbird_nix[thunderbird.nix]:::local
-        m_apps_writing_nix[writing.nix]:::local
-        m_apps_zotero_nix[zotero.nix]:::local
-      end
-      subgraph cat_cli [Cli]
-        direction TB
-        m_cli_bat_nix[bat.nix]:::local
-        m_cli_eza_nix[eza.nix]:::local
-        m_cli_fzf_nix[fzf.nix]:::local
-        m_cli_utils_nix[utils.nix]:::local
-        m_cli_zoxide_nix[zoxide.nix]:::local
-      end
-      subgraph cat_core [Core]
-        direction TB
-        m_core_boot_nix[boot.nix]:::local
-        m_core_hardware_nix[hardware.nix]:::local
-        m_core_locale_nix[locale.nix]:::local
-        m_core_networking_nix[networking.nix]:::local
-        m_core_nix_nix[nix.nix]:::local
-        m_core_options_nix[options.nix]:::local
-        m_core_packages_nix[packages.nix]:::local
-        m_core_security_nix[security.nix]:::local
-        m_core_tailscale_nix[tailscale.nix]:::local
-      end
-      subgraph cat_desktop [Desktop]
-        direction TB
-        m_desktop_audio_nix[audio.nix]:::local
-        m_desktop_fonts_nix[fonts.nix]:::local
-        m_desktop_gnome_nix[gnome.nix]:::local
-        m_desktop_printing_nix[printing.nix]:::local
-      end
-      subgraph cat_shells [Shells]
-        direction TB
-        m_shells_direnv_nix[direnv.nix]:::local
-        m_shells_fish_nix[fish.nix]:::local
-        m_shells_pyqt_nix[pyqt.nix]:::local
-        m_shells_r_nix[r.nix]:::local
-        m_shells_starship_nix[starship.nix]:::local
-      end
-      subgraph cat_users [Users]
-        direction TB
-        m_users_user_nix[user.nix]:::local
-      end
+      m_apps[Apps]:::local
+      m_cli[Cli]:::local
+      m_core[Core]:::local
+      m_desktop[Desktop]:::local
+      m_shells[Shells]:::local
+      m_users[Users]:::local
     end
   end
   Local --> Flake
