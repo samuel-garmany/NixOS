@@ -5,7 +5,8 @@ on:
     paths:
       - 'flake.lock'
       - '**/*.nix'
-      - '.github/**'
+      - '.github/workflows/update-flake-map.yml'
+      - '.github/scripts/update-readme.py'
   workflow_dispatch:
 
 jobs:
