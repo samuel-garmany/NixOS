@@ -9,7 +9,6 @@ def safe_id(s):
     return re.sub(r'[^a-zA-Z0-9]', '_', s)
 
 def main():
-    # --- 1. Fetch Data ---
     outputs = {}
     try:
         result = subprocess.run(["nix", "flake", "show", "--json"], capture_output=True, text=True)
@@ -59,47 +58,46 @@ def main():
             if os.path.isdir(os.path.join("hosts", item)):
                 hosts.append(item)
 
-    # --- 2. Generate Mermaid ---
     lines = []
     lines.append("```mermaid")
-    lines.append("graph TD")
+    lines.append("graph LR")
     
     # Styling - NixOS Official Colors
-    lines.append("  classDef flake fill:#5277C3,stroke:#fff,stroke-width:2px,color:#fff,font-weight:bold,rx:10,ry:10;")
-    lines.append("  classDef input fill:#7EBAE4,stroke:#5277C3,stroke-width:2px,color:#111,rx:5,ry:5;")
-    lines.append("  classDef local fill:#7EBAE4,stroke:#5277C3,stroke-width:2px,color:#111,rx:5,ry:5;")
-    lines.append("  classDef output fill:#5277C3,stroke:#7EBAE4,stroke-width:2px,color:#fff,rx:5,ry:5;")
+    lines.append("  classDef flake fill:#5277C3,stroke:#fff,stroke-width:2px,color:#fff,font-weight:bold,rx:20,ry:20;")
+    lines.append("  classDef input fill:#7EBAE4,stroke:#5277C3,stroke-width:2px,color:#111,rx:20,ry:20;")
+    lines.append("  classDef local fill:#7EBAE4,stroke:#5277C3,stroke-width:2px,color:#111,rx:20,ry:20;")
+    lines.append("  classDef output fill:#5277C3,stroke:#7EBAE4,stroke-width:2px,color:#fff,rx:20,ry:20;")
     
     # Core Evaluator Node
-    lines.append("  Flake[\"3. Evaluator (flake.nix)\\nMerges inputs with local\\ncode to produce outputs\"]:::flake")
+    lines.append("  Flake(flake.nix):::flake")
     
     # 1. Inputs
     if inputs:
         lines.append("")
-        lines.append("  subgraph Inputs [1. External Flake Inputs]")
+        lines.append("  subgraph Inputs [Flake Inputs]")
         lines.append("    direction TB")
         for i in sorted(inputs):
-            lines.append(f"    in_{safe_id(i)}[{i}]:::input")
+            lines.append(f"    in_{safe_id(i)}({i}):::input")
         lines.append("  end")
         lines.append("  Inputs --> Flake")
 
     # 2. Local Repository
     if hosts or modules:
         lines.append("")
-        lines.append("  subgraph Local [2. Local Repository]")
+        lines.append("  subgraph Local [Local Repository]")
         lines.append("    direction TB")
         
-        # Hosts grouped into one node to save space, or individual nodes
+        # Hosts grouped into one node to save space
         if hosts:
-            host_list = "\\n".join([f"- {h}" for h in sorted(hosts)])
-            lines.append(f"    h_Hosts[\"hosts/\\n{host_list}\"]:::local")
+            host_list = ", ".join(sorted(hosts))
+            lines.append(f"    h_Hosts(hosts/\\n{host_list}):::local")
             
-        # Modules get one node per directory, with files listed as text
+        # Modules get one node per directory, with files listed as comma-separated text
         if modules:
             for cat in sorted(modules.keys()):
-                cat_name = "(Root)" if cat == "modules" else cat.capitalize()
-                file_list = "\\n".join([f"- {f}" for f in sorted(modules[cat])])
-                lines.append(f"    m_{safe_id(cat)}[\"modules/{cat}/\\n{file_list}\"]:::local")
+                # Strip out the .nix extension for a much cleaner look
+                file_list = ", ".join([f.replace('.nix', '') for f in sorted(modules[cat])])
+                lines.append(f"    m_{safe_id(cat)}(modules/{cat}/\\n{file_list}):::local")
                 
         lines.append("  end")
         lines.append("  Local --> Flake")
@@ -107,7 +105,7 @@ def main():
     # 4. Outputs
     if outputs:
         lines.append("")
-        lines.append("  subgraph Outputs [4. Final System Outputs]")
+        lines.append("  subgraph Outputs [Flake Outputs]")
         lines.append("    direction TB")
         
         for out_type, out_val in outputs.items():
@@ -117,11 +115,11 @@ def main():
                         for k2 in v.keys():
                             flake_attr = f"{out_type}.{k}.{k2}"
                             out_id = f"out_{safe_id(out_type)}_{safe_id(k)}_{safe_id(k2)}"
-                            lines.append(f"    {out_id}[{flake_attr}]:::output")
+                            lines.append(f"    {out_id}({flake_attr}):::output")
                     else:
                         flake_attr = f"{out_type}.{k}"
                         out_id = f"out_{safe_id(out_type)}_{safe_id(k)}"
-                        lines.append(f"    {out_id}[{flake_attr}]:::output")
+                        lines.append(f"    {out_id}({flake_attr}):::output")
         lines.append("  end")
         lines.append("  Flake --> Outputs")
 
