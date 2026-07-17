@@ -5,6 +5,9 @@ import re
 import subprocess
 import os
 
+def safe_id(s):
+    return re.sub(r'[^a-zA-Z0-9]', '_', s)
+
 def main():
     # 1. Get flake outputs
     outputs = {}
@@ -61,50 +64,70 @@ def main():
             if os.path.isdir(os.path.join("hosts", item)):
                 hosts.append(item)
 
-    # Generate Mindmap
+    # Generate Flowchart
     lines = []
     lines.append("```mermaid")
-    lines.append("mindmap")
-    lines.append("  root((flake.nix))")
+    lines.append("graph LR")
     
-    # Use accurate flake terminology but with pretty capitalized labels
+    # Styling
+    lines.append("  classDef flake fill:#3b82f6,stroke:#1e3a8a,stroke-width:3px,color:#fff,font-weight:bold,rx:10,ry:10;")
+    lines.append("  classDef input fill:#10b981,stroke:#064e3b,color:#fff,rx:5,ry:5;")
+    lines.append("  classDef local fill:#f59e0b,stroke:#78350f,color:#fff,rx:5,ry:5;")
+    lines.append("  classDef output fill:#8b5cf6,stroke:#4c1d95,color:#fff,rx:5,ry:5;")
+    
+    # Core Evaluator Node
+    lines.append("  Flake[flake.nix]:::flake")
+    
+    # Inputs Subgraph
     if inputs:
-        lines.append("    Inputs")
+        lines.append("")
+        lines.append("  subgraph Inputs [Flake Inputs]")
+        lines.append("    direction TB")
         for i in sorted(inputs):
-            lines.append(f"      {i}")
-            
-    # Differentiate local repository structure from flake outputs
+            lines.append(f"    in_{safe_id(i)}[{i}]:::input")
+        lines.append("  end")
+        lines.append("  Inputs --> Flake")
+
+    # Local Repository Subgraph
     if hosts or modules:
-        lines.append("    Local Repository")
+        lines.append("")
+        lines.append("  subgraph Local [Local Repository]")
+        lines.append("    direction TB")
         
         if hosts:
-            lines.append("      Hosts")
+            lines.append("    subgraph Hosts")
+            lines.append("      direction TB")
             for h in sorted(hosts):
-                lines.append(f"        {h}")
-                
+                lines.append(f"      h_{safe_id(h)}[{h}]:::local")
+            lines.append("    end")
+            
         if modules:
-            lines.append("      Modules")
+            lines.append("    subgraph Modules")
+            lines.append("      direction TB")
             for cat in sorted(modules.keys()):
-                if cat == "modules":
-                    cat_name = "(Root)"
-                else:
-                    cat_name = cat.capitalize()
-                lines.append(f"        {cat_name}")
-                for mod in sorted(modules[cat]):
-                    lines.append(f"          {mod}")
-                
+                cat_name = "(Root)" if cat == "modules" else cat.capitalize()
+                lines.append(f"      m_{safe_id(cat)}[{cat_name}]:::local")
+            lines.append("    end")
+        
+        lines.append("  end")
+        lines.append("  Local --> Flake")
+
+    # Outputs Subgraph
     if outputs:
-        lines.append("    Outputs")
+        lines.append("")
+        lines.append("  subgraph Outputs [Flake Outputs]")
+        lines.append("    direction TB")
         for out_type, out_val in outputs.items():
-            lines.append(f"      {out_type}")
             if isinstance(out_val, dict):
                 for k, v in out_val.items():
-                    lines.append(f"        {k}")
                     if isinstance(v, dict) and 'type' not in v:
-                        # Print system-specific sub-keys (like devShells.x86_64-linux.pyqt)
                         for k2 in v.keys():
-                            lines.append(f"          {k2}")
-    
+                            lines.append(f"    out_{safe_id(out_type)}_{safe_id(k)}_{safe_id(k2)}[{out_type}.{k}.{k2}]:::output")
+                    else:
+                        lines.append(f"    out_{safe_id(out_type)}_{safe_id(k)}[{out_type}.{k}]:::output")
+        lines.append("  end")
+        lines.append("  Flake --> Outputs")
+
     lines.append("```")
     mermaid_text = "\n".join(lines)
 
