@@ -1,6 +1,12 @@
 # NixOS Configuration
 
-A modular and declarative NixOS setup managed via Flakes. It heavily utilizes `flake-parts` to organize system configurations and reusable modules across different hosts.
+A modular and declarative NixOS setup managed via Flakes. It is built around the [Dendritic Pattern](https://github.com/mightyiam/dendritic), which heavily utilizes [flake-parts](https://flake.parts) to organize system configurations and reusable feature modules cleanly across different hosts.
+
+This flake brings together several prominent community projects:
+- [lanzaboote](https://github.com/nix-community/lanzaboote) for Secure Boot support.
+- [nvf](https://github.com/notashelf/nvf) for robust Neovim configurations.
+- [home-manager](https://github.com/nix-community/home-manager) for declarative user environments.
+- [nixos-hardware](https://github.com/NixOS/nixos-hardware) for host-specific hardware quirks.
 
 ## Architecture Map
 
