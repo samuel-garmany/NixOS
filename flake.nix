@@ -19,6 +19,8 @@
     };
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+
+    nix-flatpak.url = "github:gmodena/nix-flatpak"; # unstable branch. Use github:gmodena/nix-flatpak/?ref=<tag> to pin releases.
   };
 
   outputs =
@@ -50,6 +52,7 @@
                 inputs.lanzaboote.nixosModules.lanzaboote
                 inputs.nvf.nixosModules.default
                 inputs.home-manager.nixosModules.home-manager
+                inputs.nix-flatpak.nixosModules.nix-flatpak
                 inputs.nixos-hardware.nixosModules.common-cpu-intel
                 inputs.nixos-hardware.nixosModules.common-pc-ssd
                 inputs.nixos-hardware.nixosModules.common-gpu-amd
@@ -63,6 +66,7 @@
                 inputs.lanzaboote.nixosModules.lanzaboote
                 inputs.nvf.nixosModules.default
                 inputs.home-manager.nixosModules.home-manager
+                inputs.nix-flatpak.nixosModules.nix-flatpak
                 inputs.nixos-hardware.nixosModules.framework-13-7040-amd
               ];
             };

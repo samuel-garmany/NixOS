@@ -9,6 +9,10 @@
         enable = true;
         settings = {
           vim = {
+            viAlias = false;
+            vimAlias = true;
+
+            # vim.opts and vim.options are aliased
             options = {
               shiftwidth = 2;
               tabstop = 2;
@@ -25,7 +29,7 @@
               autowrite = true;
               autowriteall = true;
 
-              # LazyVim-like quality of life features
+              # Quality of life
               cursorline = true;
               scrolloff = 8;
               sidescrolloff = 8;
@@ -34,12 +38,8 @@
               signcolumn = "yes";
             };
 
-            viAlias = false;
-            vimAlias = true;
-
             spellcheck = {
               enable = true;
-              programmingWordlist.enable = true;
             };
 
             clipboard = {
@@ -52,8 +52,19 @@
               # This must be enabled for the language modules to hook into
               # the LSP API.
               enable = true;
-              presets.tailwindcss-language-server.enable = true;
+
+              formatOnSave = true;
+              lightbulb.enable = true;
               trouble.enable = true;
+              lspSignature.enable = true; # conflicts with blink-cmp, safe with nvim-cmp
+              presets.tailwindcss-language-server.enable = true;
+            };
+
+            debugger = {
+              nvim-dap = {
+                enable = true;
+                ui.enable = true;
+              };
             };
 
             # This section does not include a comprehensive list of available language modules.
@@ -68,14 +79,28 @@
               markdown.enable = true;
 
               # Languages that are enabled in the maximal configuration.
+              bash.enable = true;
               clang.enable = true;
+              css.enable = true;
+              html.enable = true;
+              json.enable = true;
+              lua.enable = true;
               python.enable = true;
+              typescript.enable = true;
               tex.enable = true;
+
+              # Language modules that are not as common.
               scala.enable = true;
               r.enable = true;
             };
 
             visuals = {
+              nvim-web-devicons.enable = true;
+              nvim-cursorline.enable = true;
+              cinnamon-nvim.enable = true;
+              fidget-nvim.enable = true;
+
+              highlight-undo.enable = true;
               indent-blankline = {
                 enable = true;
                 setupOpts.exclude.filetypes = [
@@ -84,11 +109,6 @@
                   "neo-tree"
                 ];
               };
-              fidget-nvim.enable = true;
-            };
-
-            notify = {
-              nvim-notify.enable = true;
             };
 
             statusline = {
@@ -119,6 +139,8 @@
               nvim-cmp.enable = true;
             };
 
+            snippets.luasnip.enable = true;
+
             filetree = {
               neo-tree = {
                 enable = true;
@@ -129,8 +151,11 @@
               nvimBufferline.enable = true;
             };
 
+            treesitter.context.enable = true;
+
             binds = {
               whichKey.enable = true;
+              cheatsheet.enable = true;
             };
 
             telescope.enable = true;
@@ -138,16 +163,26 @@
             git = {
               enable = true;
               gitsigns.enable = true;
+              gitsigns.codeActions.enable = false; # throws an annoying debug message
             };
 
             dashboard = {
               dashboard-nvim.enable = true;
             };
 
+            notify = {
+              nvim-notify.enable = true;
+            };
+
             utility = {
+              diffview-nvim.enable = true;
               surround.enable = true;
               smart-splits.enable = true;
-              motion.flash-nvim.enable = true;
+              undotree.enable = true;
+
+              motion = {
+                flash-nvim.enable = true;
+              };
             };
 
             notes = {
@@ -163,9 +198,22 @@
             };
 
             ui = {
+              borders.enable = true;
               noice.enable = true;
               colorizer.enable = true;
               illuminate.enable = true;
+              smartcolumn = {
+                enable = true;
+                setupOpts.custom_colorcolumn = {
+                  # this is a freeform module, it's `buftype = int;` for configuring column position
+                  nix = "110";
+                  python = "90";
+                  c = "80";
+                  cpp = "80";
+                  tex = "80";
+                };
+              };
+              fastaction.enable = true;
             };
 
             assistant = {
@@ -178,8 +226,12 @@
             session = {
               nvim-session-manager = {
                 enable = true;
-                setupOpts.autoload_mode = "CurrentDir";
+                setupOpts.autoload_mode = "CurrentDir"; # Restored: loads automatically only when launched without arguments
               };
+            };
+
+            comments = {
+              comment-nvim.enable = true;
             };
 
             keymaps = [
@@ -189,6 +241,76 @@
                 action = "<cmd>Neotree toggle<CR>";
                 silent = true;
                 desc = "Toggle Neo-tree";
+              }
+              {
+                key = "<leader>bd";
+                mode = [ "n" ];
+                action = "<cmd>bdelete<CR>";
+                silent = true;
+                desc = "Delete Buffer";
+              }
+              {
+                key = "<S-h>";
+                mode = [ "n" ];
+                action = "<cmd>bprevious<CR>";
+                silent = true;
+                desc = "Previous Buffer";
+              }
+              {
+                key = "<S-l>";
+                mode = [ "n" ];
+                action = "<cmd>bnext<CR>";
+                silent = true;
+                desc = "Next Buffer";
+              }
+              {
+                key = "<leader>w";
+                mode = [ "n" ];
+                action = "<cmd>w<CR>";
+                silent = true;
+                desc = "Save File";
+              }
+              {
+                key = "<leader>q";
+                mode = [ "n" ];
+                action = "<cmd>qa<CR>";
+                silent = true;
+                desc = "Quit All";
+              }
+              {
+                key = "<Esc>";
+                mode = [ "n" "i" ];
+                action = "<cmd>nohlsearch<CR><Esc>";
+                silent = true;
+                desc = "Clear Search Highlights";
+              }
+              {
+                key = "<leader>|";
+                mode = [ "n" ];
+                action = "<cmd>vsplit<CR>";
+                silent = true;
+                desc = "Split Window Vertically";
+              }
+              {
+                key = "<leader>-";
+                mode = [ "n" ];
+                action = "<cmd>split<CR>";
+                silent = true;
+                desc = "Split Window Horizontally";
+              }
+              {
+                key = "<";
+                mode = [ "v" ];
+                action = "<gv";
+                silent = true;
+                desc = "Indent Left (Keep Selection)";
+              }
+              {
+                key = ">";
+                mode = [ "v" ];
+                action = ">gv";
+                silent = true;
+                desc = "Indent Right (Keep Selection)";
               }
             ];
 
@@ -239,10 +361,7 @@
         gcc
         gnumake
         lazygit
-        lua-language-server
         neovim-remote
-        nixd
-        tree-sitter
         wl-clipboard
       ];
     };

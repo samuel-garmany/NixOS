@@ -49,6 +49,7 @@
         gnome-tour
         yelp
         decibels
+        gnome-software
       ];
       environment.extraSetup = ''
         rm -f $out/share/applications/cups.desktop
