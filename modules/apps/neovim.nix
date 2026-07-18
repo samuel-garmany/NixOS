@@ -226,7 +226,7 @@
             session = {
               nvim-session-manager = {
                 enable = true;
-                setupOpts.autoload_mode = "CurrentDir"; # Restored: loads automatically only when launched without arguments
+                setupOpts.autoload_mode = "CurrentDir";
               };
             };
 
@@ -361,7 +361,6 @@
         gcc
         gnumake
         lazygit
-        neovim-remote
         wl-clipboard
       ];
     };
