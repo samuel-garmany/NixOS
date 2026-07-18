@@ -1,9 +1,9 @@
 # NixOS Configuration
 
-My modular and declarative NixOS setup managed via Flakes. It is built around the [Dendritic Pattern](https://github.com/mightyiam/dendritic), which uses [flake-parts](https://flake.parts) to organize composable configuration fragments across different hosts.
+My personal system configuration for [NixOS](https://nixos.org), a Linux distribution where your entire operating system — packages, services, users, boot — is defined in code and reproducible across machines.
 
-This flake uses a few more prominent community projects that I highly recommend:
-- [lanzaboote](https://github.com/nix-community/lanzaboote) for Secure Boot support.
-- [nvf](https://github.com/notashelf/nvf) for super simple Neovim configurations.
-- [home-manager](https://github.com/nix-community/home-manager) for declarative user environments.
-- [nixos-hardware](https://github.com/NixOS/nixos-hardware) for host-specific hardware quirks.
+This setup is organized around the [Dendritic Pattern](https://github.com/mightyiam/dendritic) using [flake-parts](https://flake.parts), and leans on a few community projects I'd recommend to anyone getting started:
+- [lanzaboote](https://github.com/nix-community/lanzaboote) — Secure Boot
+- [nvf](https://github.com/notashelf/nvf) — Neovim configuration
+- [home-manager](https://github.com/nix-community/home-manager) — declarative user environments
+- [nixos-hardware](https://github.com/NixOS/nixos-hardware) — hardware-specific quirks
