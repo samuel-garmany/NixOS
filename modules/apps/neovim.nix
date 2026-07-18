@@ -39,6 +39,7 @@
 
             spellcheck = {
               enable = true;
+              languages = ["en"];
               programmingWordlist.enable = true;
             };
 
@@ -230,6 +231,28 @@
                   })
                 '';
               };
+              "vim-dirtytalk-spell" = {
+                package = pkgs.stdenv.mkDerivation {
+                  name = "vim-dirtytalk-spell";
+                  src = pkgs.fetchFromGitHub {
+                    owner = "psliwka";
+                    repo = "vim-dirtytalk";
+                    rev = "aa57ba902b04341a04ff97214360f56856493583";
+                    sha256 = "sha256-azU5jkv/fD/qDDyCU1bPNXOH6rmbDauG9jDNrtIXc0Y=";
+                  };
+                  nativeBuildInputs = [ pkgs.neovim ];
+                  buildPhase = ''
+                    mkdir -p spell
+                    cat wordlists/*.words > spell/programming.utf-8.add
+                    export LC_ALL=C.utf8
+                    nvim --headless -n -c "mkspell! spell/programming.utf-8.spl spell/programming.utf-8.add" -c "q"
+                  '';
+                  installPhase = ''
+                    mkdir -p $out/spell
+                    cp spell/programming.utf-8.spl $out/spell/
+                  '';
+                };
+              };
             };
           };
         };
@@ -239,9 +262,9 @@
         gcc
         gnumake
         lazygit
-        lua-language-server
+        #lua-language-server
         neovim-remote
-        nixd
+        #nixd
         tree-sitter
         wl-clipboard
       ];
