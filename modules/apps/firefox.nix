@@ -28,19 +28,19 @@
               }
             ];
           };
-
-          #SanitizeOnShutdown = {
-          #  Cache = true;
-          #  Cookies = true;
-          #  Downloads = true;
-          #  FormData = true;
-          #  History = false; # Example: Keep history, clear everything else
-          #  Sessions = true;
-          #  SiteSettings = false;
-          #  OfflineApps = true;
-          #  Locked = true; # Prevents changing this setting in the Firefox UI
-          #};
-
+		
+          # SanitizeOnShutdown = {
+          #   Cache = true;
+          #   Cookies = true;
+          #   Downloads = true;
+          #   FormData = true;
+          #   History = false; # Example: Keep history, clear everything else
+          #   Sessions = true;
+          #   SiteSettings = false;
+          #   OfflineApps = true;
+          #   Locked = true; # Prevents changing this setting in the Firefox UI
+          # };
+	  
           Preferences = {
             # Vertical Tabs
             "sidebar.verticalTabs" = true;
@@ -104,6 +104,36 @@
                 updates_disabled = true;
               };
             };
+
+          "3rdparty".Extensions = {
+            "uBlock0@raymondhill.net" = {
+              adminSettings = builtins.toJSON {
+                userSettings = {
+                  advancedUserEnabled = true;
+                };
+
+                # Example configuration with exceptions:
+                # (Note: 'noop' overrides the global block and falls back to standard filter lists, which is the safest way to unbreak sites)
+                #
+                # dynamicFilteringString = ''
+                #   * * 3p-script block
+                #   * * 3p-frame block
+                #
+                #   # Exception: allow all 3rd-party scripts to run on nixos.org
+                #   nixos.org * 3p-script noop
+                #
+                #   # Exception: allow scripts from a specific domain (like github.com) to run on nixos.org
+                #   nixos.org github.com * noop
+                # '';
+
+                dynamicFilteringString = ''
+                  * * 3p-script block
+                  * * 3p-frame block
+                  
+                '';
+              };
+            };
+          };
         };
       };
     };
