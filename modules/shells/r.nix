@@ -13,6 +13,9 @@
         # Document Conversion Engine
         pandoc
 
+        # LSP Tools for Rmd
+        marksman
+
         # Build tools
         pkg-config
         cmake

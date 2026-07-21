@@ -56,7 +56,7 @@
               formatOnSave = true;
               lightbulb.enable = true;
               trouble.enable = true;
-              lspSignature.enable = true; # conflicts with blink-cmp, safe with nvim-cmp
+              lspSignature.enable = false; # conflicts with blink-cmp, safe with nvim-cmp
               presets.tailwindcss-language-server.enable = true;
             };
 
@@ -76,7 +76,10 @@
 
               # Languages that will be supported in default and maximal configurations.
               nix.enable = true;
-              markdown.enable = true;
+              markdown = {
+                enable = true;
+                extensions.render-markdown-nvim.enable = true;
+              };
 
               # Languages that are enabled in the maximal configuration.
               bash.enable = true;
@@ -84,6 +87,7 @@
               css.enable = true;
               html.enable = true;
               json.enable = true;
+              yaml.enable = true;
               lua.enable = true;
               python.enable = true;
               typescript.enable = true;
@@ -369,6 +373,21 @@
                     },
                   }
                 '';
+              };
+              "R.nvim" = {
+                package = pkgs.vimUtils.buildVimPlugin {
+                  name = "R.nvim";
+                  src = pkgs.fetchFromGitHub {
+                    owner = "R-nvim";
+                    repo = "R.nvim";
+                    rev = "master";
+                    sha256 = "0hg5g9prv4lbj49dhvg58z8gqjy90pjymkpapcgyknwmg4pi8b0p";
+                  };
+                  buildPhase = ''
+                    make -C rnvimserver
+                  '';
+                };
+                setup = "require('r').setup()";
               };
             };
           };
