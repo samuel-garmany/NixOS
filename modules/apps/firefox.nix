@@ -129,7 +129,7 @@
                 dynamicFilteringString = ''
                   * * 3p-script block
                   * * 3p-frame block
-                  
+                  canvas.colorado.edu du11hjcvx0uqb.cloudfront.net 3p-script noop
                 '';
               };
             };
