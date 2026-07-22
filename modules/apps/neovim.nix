@@ -56,7 +56,7 @@
               formatOnSave = true;
               lightbulb.enable = true;
               trouble.enable = true;
-              lspSignature.enable = false; # conflicts with blink-cmp, safe with nvim-cmp
+              lspSignature.enable = true; # safe with nvim-cmp
               presets.tailwindcss-language-server.enable = true;
             };
 
@@ -341,8 +341,6 @@
                 event = [
                   "FocusLost"
                   "BufLeave"
-                  "InsertLeave"
-                  "CursorHold"
                 ];
                 pattern = [ "*" ];
                 command = "silent! wa";
@@ -382,6 +380,11 @@
                 package = nvim-lspconfig;
                 setup = ''
                   vim.lsp.config('ltex', {
+                    filetypes = { "markdown", "tex", "latex", "org" },
+                    handlers = {
+                      ["$/progress"] = function() end,
+                      ["window/workDoneProgress/create"] = function() return vim.NIL end,
+                    },
                     settings = {
                       ltex = {
                         language = "en-US",
