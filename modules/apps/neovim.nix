@@ -9,11 +9,11 @@
         enable = true;
         settings = {
           vim = {
-            viAlias = false;
+            viAlias = true;
             vimAlias = true;
 
             # vim.opts and vim.options are aliased
-            options = {
+            opts = {
               shiftwidth = 2;
               tabstop = 2;
               expandtab = true;
@@ -30,7 +30,6 @@
               autowriteall = true;
 
               # Quality of life
-              cursorline = true;
               scrolloff = 8;
               sidescrolloff = 8;
               ignorecase = true;
@@ -40,12 +39,6 @@
 
             spellcheck = {
               enable = true;
-            };
-
-            clipboard = {
-              enable = true;
-              registers = "unnamedplus";
-              providers.wl-copy.enable = true;
             };
 
             lsp = {
@@ -58,6 +51,7 @@
               trouble.enable = true;
               lspSignature.enable = true; # safe with nvim-cmp
               presets.tailwindcss-language-server.enable = true;
+              otter-nvim.enable = true;
             };
 
             debugger = {
@@ -102,10 +96,10 @@
               scala.enable = true;
               r.enable = true;
               typst.enable = true;
-
             };
 
             visuals = {
+              nvim-scrollbar.enable = true;
               nvim-web-devicons.enable = true;
               nvim-cursorline.enable = true;
               cinnamon-nvim.enable = true;
@@ -159,7 +153,12 @@
             };
 
             tabline = {
-              nvimBufferline.enable = true;
+              nvimBufferline = {
+                enable = true;
+                mappings = {
+                  closeCurrent = "<leader>bd";
+                };
+              };
             };
 
             treesitter.context.enable = true;
@@ -188,7 +187,12 @@
               };
             };
 
+            projects = {
+              project-nvim.enable = true;
+            };
+
             utility = {
+              multicursors.enable = true;
               diffview-nvim.enable = true;
               surround.enable = true;
               smart-splits.enable = true;
@@ -214,6 +218,10 @@
             ui = {
               borders.enable = true;
               noice.enable = true;
+              breadcrumbs = {
+                enable = true;
+                navbuddy.enable = true;
+              };
               colorizer.enable = true;
               illuminate.enable = true;
               smartcolumn = {
@@ -249,6 +257,12 @@
               comment-nvim.enable = true;
             };
 
+            clipboard = {
+              enable = true;
+              registers = "unnamedplus";
+              providers.wl-copy.enable = true;
+            };
+
             keymaps = [
               {
                 key = "<leader>e";
@@ -256,27 +270,6 @@
                 action = "<cmd>Neotree toggle<CR>";
                 silent = true;
                 desc = "Toggle Neo-tree";
-              }
-              {
-                key = "<leader>bd";
-                mode = [ "n" ];
-                action = "<cmd>bdelete<CR>";
-                silent = true;
-                desc = "Delete Buffer";
-              }
-              {
-                key = "<S-h>";
-                mode = [ "n" ];
-                action = "<cmd>bprevious<CR>";
-                silent = true;
-                desc = "Previous Buffer";
-              }
-              {
-                key = "<S-l>";
-                mode = [ "n" ];
-                action = "<cmd>bnext<CR>";
-                silent = true;
-                desc = "Next Buffer";
               }
               {
                 key = "<leader>w";
